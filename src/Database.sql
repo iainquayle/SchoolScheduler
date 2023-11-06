@@ -1,0 +1,19 @@
+CREATE DATABASE IF NOT EXISTS `SchoolScheduler`;
+
+CREATE TABLE IF NOT EXISTS `SchoolScheduler`.`Users` (
+  `UserID` INT NOT NULL AUTO_INCREMENT,
+  `Username` VARCHAR(45) NOT NULL,
+  `Password` VARCHAR(45) NOT NULL,
+  `FirstName` VARCHAR(45) NOT NULL,
+  `LastName` VARCHAR(45) NOT NULL,
+  `Phone` VARCHAR(45) NOT NULL,
+  `IsAdmin` TINYINT(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`UserID`)
+);
+
+CREATE TABLE IF NOT EXISTS `SchoolScheduler`.`UserEmails` (
+	'UserID' INT NOT NULL,
+	'Email' VARCHAR(45) NOT NULL,
+	'IsPrimary' TINYINT(1) NOT NULL DEFAULT '0',
+	PRIMARY KEY (`UserID`, `Email`)
+);
