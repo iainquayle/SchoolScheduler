@@ -7,9 +7,11 @@ export default function Login(setUserid: any, setPassword: any) {
   return (
     <>
       <form>
-        <input type="text" />
-        <input type="text" />
-        <button type="submit">Sign In</button>
+        <label>Username or email</label><br />
+        <input type="text" /><br />
+        <label>Password</label><br />
+        <input type="text" /><br />
+        <input type="button" value="Sign In"/>
       </form>
     </>
   )

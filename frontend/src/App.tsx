@@ -1,19 +1,30 @@
-import { createSignal } from 'solid-js'
+import { createSignal, Switch, Match } from 'solid-js'
 import './App.css'
 
-import Login from "./pages/login"
+import Login from "./pages/Login"
+import Schedule from "./pages/Schedule"
+
+const NULL_ID = 0
 
 function App() {
-  const [userid, setUserid] = createSignal('')
+  const [userid, setUserid] = createSignal(NULL_ID)
   const [password, setPassword] = createSignal('')
 
-  const handleSubmit = () => {
-    console.log('User ID:', userid())
-    console.log('Password:', password())
+  enum Page {
+    Login,
+    Schedule,
   }
+
   return (
     <>
-      <Login setUserid={setUserid} setPassword={setPassword} />
+      <Switch>
+        <Match when={userid() === NULL_ID}>
+          <Login setUserid={setUserid} setPassword={setPassword} />
+        </Match>
+        <Match when={userid() !== NULL_ID}>
+          <Schedule userid={userid} password={password} />          
+        </Match>
+      </Switch>
     </>
   )
 }
