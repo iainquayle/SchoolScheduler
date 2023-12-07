@@ -1,8 +1,8 @@
 import { createSignal, Switch, Match } from 'solid-js'
 import './App.css'
 
-import Login from "./pages/Login"
-import Schedule from "./pages/Schedule"
+import Login from "./components/Login"
+import Schedule from "./components/Schedule"
 
 const NULL_ID = 0
 
