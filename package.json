@@ -4,12 +4,11 @@
   "description": "",
   "main": "index.js",
   "devDependencies": {
-    "concurrently": "^8.2.2",
     "create-vite": "^5.0.0"
   },
   "scripts": {
     "start": "node backend/src/server.js",
-    "client": "cd frontend && npm start",
+    "client": "cd frontend && npm run",
     "dev": "concurrently \"npm run backend\" \"cd Frontend && npm run dev\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
