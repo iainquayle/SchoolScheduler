@@ -10,7 +10,7 @@ function App() {
   const [userid, setUserid] = createSignal(NULL_ID)
   const [password, setPassword] = createSignal('')
 
-  enum Page {
+  enum components {
     Login,
     Schedule,
   }
