@@ -1,18 +1,19 @@
-import { Show } from 'solid-js';
+import { createSignal, Show } from 'solid-js';
 import "./Modal.css";
 
 export const NO_MODAL = "no-modal";
+export const [activeModal, setActiveModal] = createSignal(NO_MODAL);
 
-export function Modal(props: { children: any, title: string, modalType: any, activeModal: any, setActiveModal: any}) {
+export function Modal(props: { children: any, title: string, modalType: string }) {
 
   const closeModal = () => {
-    props.setActiveModal(NO_MODAL);
+    setActiveModal(NO_MODAL);
   };
 
   //TODO: not sure why span not inlining, should be default too, will switch to grid probably
   return (
     <>
-      <Show when={props.modalType === props.activeModal()}>
+      <Show when={props.modalType === activeModal()}>
         <div class="modal">
           <div class="modal-content">
             <span class="modal-title-bar" style="display: inline;"> 

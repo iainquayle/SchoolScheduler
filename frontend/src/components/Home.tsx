@@ -1,6 +1,6 @@
 // Home.tsx
 import { createSignal } from "solid-js";
-import {Modal, NO_MODAL} from "./Modal";
+import {Modal, setActiveModal} from "./Modal";
 
 interface HomeProps {
   setUserid: (value: any) => void;
@@ -14,14 +14,13 @@ enum ModalType {
 
 export default function Home(props: HomeProps) {
   const [userNameOrEmail, setUserNameOrEmail] = createSignal("");
-  const [activeModal, setActiveModal] = createSignal(NO_MODAL);
 
   return (
     <div>
       <h1>School Scheduler</h1>
       <button onClick={() => setActiveModal(ModalType.REGISTRATION)}>Register</button>
       <button onClick={() => setActiveModal(ModalType.LOGIN)}>Login</button>
-      <Modal title="Login" modalType={ModalType.LOGIN} activeModal={activeModal} setActiveModal={setActiveModal}>
+      <Modal title="Login" modalType={ModalType.LOGIN}> 
         <div>
           <label for="username">Username or Email</label>
           <input type="text" id="username" name="username" value={userNameOrEmail()} onInput={(e) => setUserNameOrEmail(e.currentTarget.value)} />
@@ -31,7 +30,7 @@ export default function Home(props: HomeProps) {
           <input type="password" id="password" name="password" />
         </div>
       </Modal>
-      <Modal title="Register" modalType={ModalType.REGISTRATION} activeModal={activeModal} setActiveModal={setActiveModal}>
+      <Modal title="Register" modalType={ModalType.REGISTRATION}>
         <div/>
       </Modal>
     </div>
