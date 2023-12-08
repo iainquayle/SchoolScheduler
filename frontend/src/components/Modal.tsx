@@ -7,6 +7,8 @@ import "./Modal.css";
 //then no need to do show logic in anywhere other than the modal itself
 //and, there will only ever be one active modal
 
+//js makes this kind of hard to do, one option though is to pass in the get and set function being used   
+
 //let activeModal = ""; 
 
 export default function Modal(props: { children: any, onClose: () => void, title: string}) {
@@ -24,7 +26,6 @@ export default function Modal(props: { children: any, onClose: () => void, title
         <div class="modal">
           <div class="modal-content">
             <span class="close" style="display: inline;"> 
-              <div class="modal-title">{props.title}</div>
               <div class="modal-title">{props.title}</div>
               <button onClick={closeModal} style="padding: 0px;">Close</button>
             </span>
