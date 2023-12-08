@@ -25,14 +25,14 @@ function App() {
       </Switch>
 
       {loginModal() && (
-        <Modal onClose={() => setLoginModal(false)}>
+        <Modal onClose={() => setLoginModal(false)} title={"Login"}>
           {/* Content of the login modal */}
           <Login setUserid={setUserid} setPassword={setPassword} />
         </Modal>
       )}
 
       {registrationModal() && (
-        <Modal onClose={() => setRegistrationModal(false)}>
+        <Modal onClose={() => setRegistrationModal(false)} title={"Registertion"}>
           {/* Content of the registration modal */}
           {/* You can create a new component for registration */}
           {/* For simplicity, I'm using the Login component. Adjust as needed */}
