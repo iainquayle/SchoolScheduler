@@ -2,7 +2,7 @@
 import { createSignal } from "solid-js";
 import {Modal, setActiveModal} from "./Modal";
 
-interface HomeProps {
+interface LandingProps {
   setUserid: (value: any) => void;
   setPassword: (value: any) => void;
 }
@@ -12,7 +12,10 @@ enum ModalType {
   REGISTRATION = "registration",
 }
 
-export default function Home(props: HomeProps) {
+function login(form): void {
+}
+
+export default function Landing(props: LandingProps) {
   const [userNameOrEmail, setUserNameOrEmail] = createSignal("");
 
   return (
@@ -21,14 +24,12 @@ export default function Home(props: HomeProps) {
       <button onClick={() => setActiveModal(ModalType.REGISTRATION)}>Register</button>
       <button onClick={() => setActiveModal(ModalType.LOGIN)}>Login</button>
       <Modal title="Login" modalType={ModalType.LOGIN}> 
-        <div>
+        <form name="login">
           <label for="username">Username or Email</label>
-          <input type="text" id="username" name="username" value={userNameOrEmail()} onInput={(e) => setUserNameOrEmail(e.currentTarget.value)} />
-        </div>
-        <div>
+          <input type="text" name="username" value={userNameOrEmail()} />
           <label for="password">Password</label>
-          <input type="password" id="password" name="password" />
-        </div>
+          <input type="password" name="password" />
+        </form>
       </Modal>
       <Modal title="Register" modalType={ModalType.REGISTRATION}>
         <div/>

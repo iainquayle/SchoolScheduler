@@ -1,5 +1,6 @@
 import { createSignal, For } from 'solid-js'
 import { Modal, NO_MODAL } from "./Modal";
+import { Slot, SlotElement } from './Slot';
 
 //TODO:
 //  make slot component
@@ -12,16 +13,16 @@ import { Modal, NO_MODAL } from "./Modal";
 export default function Schedule(userid: any, password: any) {
 
   const temp_data = [
-    {time: 8},
-    {time: 4},
-    {time: 2},
+    new Slot("test", new Date(), new Date()),
+    new Slot("test", new Date(), new Date()),
+    new Slot("test", new Date(), new Date()),
   ]
 
   return (
     <>
       <For each={temp_data}>
-        {(item) => (
-          <div>{item.time}</div>
+        {(slotItem) => (
+          <SlotElement slot={slotItem}/>
         )}
       </For>
     </>
