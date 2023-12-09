@@ -16,9 +16,9 @@ export function Modal(props: { children: any, title: string, modalType: string }
       <Show when={props.modalType === activeModal()}>
         <div class="modal">
           <div class="modal-content">
-            <span class="modal-title-bar" style="display: inline;"> 
-              <div class="modal-title">{props.title}</div>
-              <button onClick={closeModal} style="padding: 0px;">Close</button>
+            <span class="modal-header"> 
+              <div class="modal-header-element">{props.title}</div>
+              <div class="modal-header-element modal-exit" onClick={closeModal}>Close</div>
             </span>
             {props.children}
           </div>

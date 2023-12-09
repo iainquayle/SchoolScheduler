@@ -17,3 +17,27 @@
   border-radius: 1em;
   background-color: rgb(20, 20, 20); 
 }
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1em;
+  background-color: rgb(25, 25, 25);
+  border-radius: .5em;
+  padding: .5em;
+}
+
+.modal-header-element {
+  --element-color: rgb(200, 250, 250);
+  color: var(--element-color);
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.modal-exit {
+  --exit-color: rgb(250, 200, 200);
+  cursor: pointer;
+  color: var(--exit-color);
+  /*border: solid 1px var(--exit-color);*/
+}
