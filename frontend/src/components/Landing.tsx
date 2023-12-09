@@ -13,6 +13,7 @@ enum ModalType {
 }
 
 const LOGIN_FORM = "login-form";
+const REGISTRATION_FORM = "registration-form";
 
 
 export default function Landing(props: LandingProps) {
@@ -21,13 +22,6 @@ export default function Landing(props: LandingProps) {
 
   //cant get this.form to work for some reason, so will just do this. too bad
   //perhaps just inline all of this stuff??
-  function login(): void {
-    const form = document.getElementById(LOGIN_FORM);
-    if (form !== null) 
-      alert(form.username.value);
-  }
-  const register = (form): void => {
-  }
 
   return (
     <div>
@@ -38,17 +32,30 @@ export default function Landing(props: LandingProps) {
         <Show when={failedLogin()}>
           <div>Invalid username or password</div>
         </Show>
-        <form name="login-form" id={LOGIN_FORM}>
+        <form name={LOGIN_FORM} id={LOGIN_FORM}>
           <div>
-            <label for="username">Username or Email</label>
-            <input type="text" name="username" value={userNameOrEmail()} />
+            <label for="userHandle">Username or Email</label>
+            <input type="text" name="userHandle"/>
           </div>
           <div>
             <label for="password">Password</label>
             <input type="password" name="password" />
           </div>
           <div>
-            <input type="button" onclick={login} value="Sign-in"/>
+            <input type="button" onclick={() => {
+              const form = document.getElementById(LOGIN_FORM) as HTMLFormElement;
+              //fetch login, if successful, set userid and password, else set failedLogin
+              if (form != null) {
+                const userHandle = form.userHandle.value as string;
+                //logic is temp to test pages
+                if (userHandle.includes("@")) {
+                  props.setUserid(userHandle);
+                  props.setPassword("test");
+                } else {
+                  setFailedLogin(true);
+                }
+              }
+            }} value="Sign-in"/>
           </div>
         </form>
       </Modal>
@@ -56,10 +63,10 @@ export default function Landing(props: LandingProps) {
         <Show when={failedLogin()}>
           <div>Email or username taken, or password invalid</div>
         </Show>
-        <form name="registration-form">
+        <form name={REGISTRATION_FORM} id={REGISTRATION_FORM}>
           <div>
             <label for="username">Username</label>
-            <input type="text" name="username" value="test"/>
+            <input type="text" name="username"/>
           </div>
           <div>
             <label for="email">Email</label>
@@ -70,7 +77,9 @@ export default function Landing(props: LandingProps) {
             <input type="password" name="password" />
           </div>
           <div>
-            <input type="button" onclick={(form) => {}} value="Sign-in"/>
+            <input type="button" onclick={(form) => {
+
+            }} value="Register"/>
           </div>
         </form>
       </Modal>
