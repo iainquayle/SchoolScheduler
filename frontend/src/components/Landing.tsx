@@ -50,6 +50,33 @@ export default function Landing(props: LandingProps) {
               //fetch login, if successful, set userid and password, else set failedLogin
               if (form != null) {
                 const userHandle = form.userHandle.value as string;
+                /*
+    e.preventDefault();
+
+    // Assuming you have a login function that sends a POST request to the login endpoint
+    try {
+      const response = await fetch('/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username: username(), password: password() }),
+      });
+
+      if (response.ok) {
+        console.log('Login successful');
+        setUserid(username());
+        setPassword(password());
+        onLogin();
+      } else {
+        console.log('Invalid credentials');
+        // Handle the case where login failed
+      }
+    } catch (error) {
+      console.error('Error during login:', error);
+      // Handle the error
+    }
+                */
               }
             }} value="Sign-in"/>
           </div>
