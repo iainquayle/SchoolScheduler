@@ -28,6 +28,12 @@ export default function Schedule(userid: any, password: any) {
     <>
       <div class="schedule">
         <div class="schedule-column schedule-sidebar">
+          <div class="schedule-sidebar-element">Add Assessment</div>
+          <div class="schedule-sidebar-element">Add Class</div>
+          <div class="schedule-sidebar-element">Add Reserved Slot</div>
+          <div class="schedule-sidebar-element">Follow Class</div>
+          <div class="schedule-sidebar-element">Follow Institution</div>
+          <div class="schedule-sidebar-element">Logout</div>
         </div>
         <div class="schedule-column schedule-list">
           <For each={temp_data}>

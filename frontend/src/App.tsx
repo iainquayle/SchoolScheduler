@@ -2,12 +2,15 @@
 import { createSignal, Switch, Match } from 'solid-js';
 import Schedule from "./components/Schedule";
 import Landing from "./components/Landing";
+import { AuthenticationData } from "./components/Authentication"
 
 const NULL_ID = 0;
 
 export default function App() {
-  const [userid, setUserid] = createSignal(NULL_ID);
+  const [userid, setUserid] = createSignal(1);
   const [password, setPassword] = createSignal('');
+
+  const authData = new AuthenticationData(userid, password, setUserid, setPassword) 
 
   return (
     <>

@@ -1,3 +1,5 @@
+import "./Slot.css";
+
 export class SlotData {
   title: string;
   startDatetime: Date;
@@ -35,7 +37,7 @@ interface SlotDisplayProps {
 export function SlotElement( props: SlotDisplayProps ) {
   return (
     <>
-      <div class="slot-element">
+      <div type="button" class="slot-element">
         <div>{props.data.title}</div>
         <div>{props.data.startDatetime.toLocaleString()}</div>
         <div>{props.data.endDatetime.toLocaleString()}</div>
