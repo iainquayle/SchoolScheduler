@@ -1,7 +1,15 @@
 * {
+  --color-primary: rgb(251, 251, 208);
+  --background-primary: rgb(20, 20, 25);
+  --background-secondary: rgb(25, 25, 30);
+  --background-tertiary: rgb(30, 30, 35);
+
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300;
+  color: var(--color-primary);
 }
 
 body {
@@ -11,5 +19,13 @@ body {
 	min-width: 100%;
 	margin: 0;
 	padding: 0;
-	background-color: rgb(20, 20, 20);
+	background-color: var(--background-primary);
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  padding: .5em;
+  border-radius: .5em;
+  background-color: var(--background-secondary);
 }

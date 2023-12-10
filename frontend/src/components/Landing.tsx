@@ -2,6 +2,8 @@
 import { createSignal, Show } from "solid-js";
 import {Modal, setActiveModal} from "./Modal";
 
+import "./Landing.css";
+
 interface LandingProps {
   setUserid: (value: any) => void;
   setPassword: (value: any) => void;
@@ -24,7 +26,7 @@ export default function Landing(props: LandingProps) {
   //perhaps just inline all of this stuff??
 
   return (
-    <div>
+    <div class="landing">
       <h1>School Scheduler</h1>
       <button onClick={() => {setFailedLogin(false); setActiveModal(ModalType.REGISTRATION)}}>Register</button>
       <button onClick={() => {setFailedLogin(false); setActiveModal(ModalType.LOGIN)}}>Login</button>
@@ -47,13 +49,6 @@ export default function Landing(props: LandingProps) {
               //fetch login, if successful, set userid and password, else set failedLogin
               if (form != null) {
                 const userHandle = form.userHandle.value as string;
-                //logic is temp to test pages
-                if (userHandle.includes("@")) {
-                  props.setUserid(userHandle);
-                  props.setPassword("test");
-                } else {
-                  setFailedLogin(true);
-                }
               }
             }} value="Sign-in"/>
           </div>
@@ -77,8 +72,11 @@ export default function Landing(props: LandingProps) {
             <input type="password" name="password" />
           </div>
           <div>
-            <input type="button" onclick={(form) => {
-
+            <input type="button" onclick={() => {
+              const form = document.getElementById(REGISTRATION_FORM) as HTMLFormElement;
+              if (form != null) {
+                const username = form.username.value as string;
+              }
             }} value="Register"/>
           </div>
         </form>
