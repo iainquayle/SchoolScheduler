@@ -6,7 +6,7 @@ import Landing from "./components/Landing";
 const NULL_ID = 0;
 
 export default function App() {
-  const [userid, setUserid] = createSignal(1);
+  const [userid, setUserid] = createSignal(NULL_ID);
   const [password, setPassword] = createSignal('');
 
   return (
