@@ -1,10 +1,10 @@
 const mysql = require('mysql');
 
 const db = mysql.createConnection({
-  host: 'your_database_host',
-  user: 'your_database_user',
-  password: 'your_database_password',
-  database: 'SchoolScheduler',
+  host: 'localhost',
+  user: 'root',
+  password: 'CPSC471',
+  port: 3306,
 });
 
 db.connect((err) => {

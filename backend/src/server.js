@@ -7,9 +7,9 @@ app.use(bodyParser.json());
 
 const db = mysql.createConnection({
   host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'your_database_user',
-  password: process.env.DB_PASSWORD || 'your_database_password',
-  database: process.env.DB_NAME || 'SchoolScheduler',
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || 'CPSC471',
+  database: process.env.DB_PORT || '3306',
 });
 
 // Check database connection
@@ -77,7 +77,7 @@ app.post('/register', (req, res) => {
   );
 });
 
-const port = process.env.PORT || 5173;
+const port = process.env.PORT || 3306;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
