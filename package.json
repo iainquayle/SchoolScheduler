@@ -9,7 +9,7 @@
   "scripts": {
     "start": "node backend/src/server.js",
     "client": "cd frontend && npm run",
-    "dev": "concurrently \"npm run backend\" \"cd Frontend && npm run dev\"",
+    "dev": "concurrently \"cd backend && npm run backend\" \"cd frontend && npm run dev\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
