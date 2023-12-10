@@ -2,6 +2,8 @@ import { createSignal, For } from 'solid-js'
 import { Modal, NO_MODAL } from "./Modal";
 import { SlotData, SlotElement } from './Slot';
 
+import { AuthenticationData, NULL_ID } from "./Authentication";
+
 import "./Schedule.css";
 
 //TODO:
@@ -15,7 +17,11 @@ import "./Schedule.css";
 //  also perhaps make some data class for passing around the auth info, just holds userid, password, and set functions so they can be cleared
 //  dont really want to make some kind of auth coockie, so passing info will have to do
 
-export default function Schedule(userid: any, password: any) {
+interface ScheduleProps {
+  authData: AuthenticationData;
+}
+
+export default function Schedule( props: ScheduleProps ) {
 
   const temp_data = [
     new SlotData("test", new Date(), new Date()),
@@ -33,7 +39,7 @@ export default function Schedule(userid: any, password: any) {
           <div class="schedule-sidebar-element">Add Reserved Slot</div>
           <div class="schedule-sidebar-element">Follow Class</div>
           <div class="schedule-sidebar-element">Follow Institution</div>
-          <div class="schedule-sidebar-element">Logout</div>
+          <div class="schedule-sidebar-element" onclick={() => {props.authData.setPassword(""); props.authData.setID(NULL_ID)}} >Logout</div>
         </div>
         <div class="schedule-column schedule-list">
           <For each={temp_data}>

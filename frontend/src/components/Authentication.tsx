@@ -1,3 +1,5 @@
+export const NULL_ID = 0;
+
 export class AuthenticationData {
 	id: any;
 	password: any;

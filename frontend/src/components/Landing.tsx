@@ -2,11 +2,12 @@
 import { createSignal, Show } from "solid-js";
 import {Modal, setActiveModal} from "./Modal";
 
+import { AuthenticationData } from "./Authentication";
+
 import "./Landing.css";
 
 interface LandingProps {
-  setUserid: (value: any) => void;
-  setPassword: (value: any) => void;
+  authData: AuthenticationData;
 }
 
 enum ModalType {

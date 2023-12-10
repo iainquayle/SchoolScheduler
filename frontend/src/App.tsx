@@ -2,9 +2,8 @@
 import { createSignal, Switch, Match } from 'solid-js';
 import Schedule from "./components/Schedule";
 import Landing from "./components/Landing";
-import { AuthenticationData } from "./components/Authentication"
+import { AuthenticationData, NULL_ID } from "./components/Authentication"
 
-const NULL_ID = 0;
 
 export default function App() {
   const [userid, setUserid] = createSignal(1);
@@ -16,10 +15,10 @@ export default function App() {
     <>
       <Switch>
         <Match when={userid() === NULL_ID}>
-          <Landing setUserid={setUserid} setPassword={setPassword}/>
+          <Landing authData={authData}/>
         </Match>
         <Match when={userid() !== NULL_ID}>
-          <Schedule userid={userid} password={password} />          
+          <Schedule authData={authData}/>          
         </Match>
       </Switch>
     </>
