@@ -1,7 +1,12 @@
 const mysql = require('mysql');
 
-//TODO: make an init function that will create tables if they need creating, and the database namespace if needed
-//NOTE: currently the db will be drop upon a server restart
+//NOTE: currently the db will be drop and reset upon a server restart
+//TODO:
+//  - assessments
+//  - class times
+//  - class locations
+//  - user assessments
+//
 
 const db = mysql.createConnection({
   host: process.env.DB_HOST || 'localhost',
@@ -11,7 +16,7 @@ const db = mysql.createConnection({
 });
 
 function configure(db) {
-  const queries = [
+  const table_creation_queries = [
     'CREATE DATABASE IF NOT EXISTS Scheduler',
     'USE Scheduler',
 
@@ -33,9 +38,17 @@ function configure(db) {
       CourseName VARCHAR(45) NOT NULL,
       CourseCode VARCHAR(45) NOT NULL,
       PRIMARY KEY (CourseID))`,
+
+    `CREATE TABLE IF NOT EXISTS Sections (
+      SectionID INT NOT NULL AUTO_INCREMENT,
+      SectionName VARCHAR(45) NOT NULL,
+      SectionCode VARCHAR(45) NOT NULL,
+      CourseID INT NOT NULL,
+      PRIMARY KEY (SectionID),
+      FOREIGN KEY (CourseID) REFERENCES Courses(CourseID))`,
   ]
-  for (let i = 0; i < queries.length; i++) {
-    db.query(queries[i], (err, result) => {
+  for (let i = 0; i < table_creation_queries.length; i++) {
+    db.query(table_creation_queries[i], (err, result) => {
       if (err) {
         console.error('Error executing ' + i + ' :', err);
       } else {
@@ -43,10 +56,26 @@ function configure(db) {
       }
     });
   }
+  db.query(`SELECT * FROM Users WHERE Username = 'admin'`, (err, result) => {
+    if (err) {
+      console.error('Error checking for admin:', err);
+    } else {
+      if (result.length === 0) {
+        db.query(`INSERT INTO Users (Username, Password, Email, Admin) VALUES ('admin', 'admin', 
+          'admin@scheduler.com', 1)`, (err, _) => {
+          if (err) {
+            console.error('Error creating admin:', err);
+          } else {
+            console.log('Admin created');
+          }
+        });
+      }
+    }
+  });
 }
 
 function drop(db) {
-  db.query('DROP DATABASE IF EXISTS Scheduler', (err, result) => {
+  db.query('DROP DATABASE IF EXISTS Scheduler', (err, _) => {
     if (err) {
       console.error('Error dropping database:', err);
     } else {

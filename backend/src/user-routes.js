@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('./sql-db'); 
+const {validateSafeInput, validateEmailPattern} = require('./validation');
 
 const NULL_ID = -1;
 
@@ -13,19 +14,16 @@ const NULL_ID = -1;
 router.post('/login', (req, res) => {
   console.log("login called")
   const { userHandle, password } = req.body;
-
   // TODO: expand validation here as well as in register
-  // Validate input data
-  if (!userHandle || !password) {
+  if ((!userHandle || !password) || !validateSafeInput(password) || !(validateSafeInput(userHandle) || validateEmailPattern(userHandle))) {
     return res.status(400).json({ error: 'Invalid input data' });
   }
 
   let loginQuery = '';
-
   if (userHandle.includes('@')) {
-    loginQuery = 'SELECT UserID FROM Users WHERE Email = ? AND Password = ?';
+    loginQuery = 'SELECT UserID, Admin FROM Users WHERE Email = ? AND Password = ?';
   } else {
-    loginQuery = 'SELECT UserID FROM Users WHERE Username = ? AND Password = ?';
+    loginQuery = 'SELECT UserID, Admin FROM Users WHERE Username = ? AND Password = ?';
   }
 
   db.query(loginQuery, [userHandle, password], (err, result) => {
@@ -33,10 +31,9 @@ router.post('/login', (req, res) => {
       console.error('Error during login:', err);
       return res.status(500).json({ error: 'Internal Server Error' });
     }
-
     if (result.length > 0) {
       console.log('Login successful');
-      res.json({ userid: result[0].UserID });
+      res.json({ userid: result[0].UserID, admin: result[0].Admin});
     } else {
       console.log('Invalid credentials');
       res.json({ userid: NULL_ID });
@@ -48,7 +45,7 @@ router.post('/register', (req, res) => {
   console.log("register called")
   const { username, password, email } = req.body;
 
-  if (!username || !password || !email) {
+  if ((!username || !password || !email) || !validateSafeInput([username, password]) || !validateEmailPattern(email)) {
     return res.status(400).json({ error: 'Invalid input data' });
   }
 
@@ -62,10 +59,9 @@ router.post('/register', (req, res) => {
         return res.status(500).json({ error: 'Internal Server Error' });
       }
       console.log('User registered successfully');
-    }
-  );
+  });
   db.query(
-    `SELECT UserID FROM Users WHERE Username = ?`,
+    `SELECT UserID, Admin FROM Users WHERE Username = ?`,
     [username],
     (err, result) => {
       if (err) {
@@ -73,7 +69,7 @@ router.post('/register', (req, res) => {
         return res.status(500).json({ error: 'Internal Server Error' });
       }
       console.log('User ID retrieved successfully');
-      res.json({ userid: result[0].UserID });
+      res.json({ userid: result[0].UserID, admin: result[0].Admin});
     }
   );
 });

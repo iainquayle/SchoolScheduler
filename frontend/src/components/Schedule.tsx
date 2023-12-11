@@ -1,8 +1,8 @@
-import { createSignal, For } from 'solid-js'
+import { createSignal, For, Show } from 'solid-js'
 import { Modal, setActiveModal, NO_MODAL } from "./Modal";
 import { SlotData, SlotElement } from './Slot';
 
-import { setUserid, setPassword, NULL_ID } from "./Authentication";
+import { setUserid, setPassword, isAdmin, NULL_ID } from "./Authentication";
 
 import "./Schedule.css";
 
@@ -21,6 +21,9 @@ export default function Schedule( ) {
     <>
       <div class="schedule">
         <div class="schedule-column schedule-sidebar">
+          <Show when={isAdmin()}>
+            <div class="schedule-sidebar-element">Access Admin Tools</div>
+          </Show>
           <div class="schedule-sidebar-element">Add Assessment</div>
           <div class="schedule-sidebar-element">Add Class</div>
           <div class="schedule-sidebar-element">Add Reserved Slot</div>

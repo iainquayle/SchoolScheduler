@@ -4,14 +4,13 @@ const app = express();
 const bodyParser = require('body-parser');
 const userRoutes = require('./user-routes'); 
 const testRoutes = require('./test-routes');
-//const db = require('./db'); 
 
 app.use(cors({
   origin: '*'
 }));
 app.use(bodyParser.json());
 
-app.post('/', (req, res) => {
+app.post('/', (_, res) => {
   console.log("called");
   res.json({text: 'Hey Mom!'});
 });

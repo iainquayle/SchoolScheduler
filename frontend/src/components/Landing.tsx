@@ -2,7 +2,7 @@
 import { createSignal, Show } from "solid-js";
 import {Modal, setActiveModal, NO_MODAL} from "./Modal";
 import { Routes, standardPost } from "./Routes";
-import { setUserid, setPassword } from "./Authentication";
+import { setUserid, setPassword, setIsAdmin, NULL_ID } from "./Authentication";
 
 import "./Landing.css";
 
@@ -43,15 +43,16 @@ export default function Landing( ) {
                   { userHandle: form.userHandle.value, password: form.password.value } ));
                 if (response.ok) {
                   const json = await response.json();
-                  if (json.userid != null) {
+                  if (json.userid != null && json.userid != NULL_ID) {
                     setUserid(json.userid);
                     setPassword(form.password.value);
+                    setIsAdmin(json.admin);
                     return;
                   }  
                 } 
-              } catch (error) { console.log(error); }
-              setFailedLogin(true);
+              } catch (error) { console.log(error);}
             }
+            setFailedLogin(true);
           }} value="Sign-in"/>
         </form>
       </Modal>
