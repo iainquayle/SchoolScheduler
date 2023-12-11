@@ -40,26 +40,22 @@ export default function Landing( ) {
             <input type="password" name="password" />
           </div>
           <div>
-            <input type="button" onclick={() => {
+            <input type="button" onclick={async () => {
               const form = document.getElementById(LOGIN_FORM) as HTMLFormElement;
               //fetch login, if successful, set userid and password, else set failedLogin
               console.log("clicked")
               if (form != null) {
                 try {
-                  const response = fetch("http://localhost:8080/", {
-                    method: 'GET',
-                    mode: 'cors',
+                  const response = await fetch("http://localhost:8080/", {
+                    method: 'POST',
+                    //mode: 'cors',
                     headers: {
-                      //'Content-Type': 'application/json',
+                      'Content-Type': 'application/json',
                     },
-                    //body: JSON.stringify({ userHandle: form.userHandle.value, password: form.password.value }),
+                    body: JSON.stringify({ userHandle: form.userHandle.value, password: form.password.value }),
                   });
-                  if (response.ok) {
-                    console.log('Login successful');
-                  } else {
-                    console.error('Login failed');
-                    setFailedLogin(true);
-                  }
+                  console.log("response");
+                  console.log(response.json());
                 } catch (error) {
                   console.error('Login failed', error);
                   setFailedLogin(true);
