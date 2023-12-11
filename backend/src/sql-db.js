@@ -1,6 +1,7 @@
 const mysql = require('mysql');
 
 //TODO: make an init function that will create tables if they need creating, and the database namespace if needed
+//NOTE: currently the db will be drop upon a server restart
 
 const db = mysql.createConnection({
   host: process.env.DB_HOST || 'localhost',
@@ -61,7 +62,8 @@ db.connect((err) => {
     console.log('Connected to database');
   }
 });
+
+drop(db);
 configure(db);
-//drop(db);
 
 module.exports = db;

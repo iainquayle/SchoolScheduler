@@ -1,6 +1,6 @@
 // Home.tsx
 import { createSignal, Show } from "solid-js";
-import {Modal, setActiveModal} from "./Modal";
+import {Modal, setActiveModal, NO_MODAL} from "./Modal";
 import { Routes, standardPost } from "./Routes";
 import { setUserid, setPassword } from "./Authentication";
 
@@ -62,12 +62,29 @@ export default function Landing( ) {
         <form name={REGISTRATION_FORM} id={REGISTRATION_FORM}>
           <label for="username">Username</label>
           <input type="text" name="username"/>
-          <label for="email">Email</label>
-          <input type="email" name="email"/> 
           <label for="password">Password</label>
           <input type="password" name="password" />
+          <label for="email">Email</label>
+          <input type="email" name="email"/> 
+          <label for="school">School(not used yet)</label>
+          <input type="text" name="school"/> 
           <input type="button" onclick={async () => {
             const form = document.getElementById(REGISTRATION_FORM) as HTMLFormElement;
+            if (form != null) {
+              try {
+                const response = await (standardPost(Routes.Server + Routes.User + Routes.Register, 
+                  { username: form.username.value, password: form.password.value, email: form.email.value } ));
+                if (response.ok) {
+                  const json = await response.json();
+                  if (json.userid != null) {
+                    setUserid(json.userid);
+                    setPassword(form.password.value);
+                    return;
+                  }  
+                } 
+              } catch (error) { console.log(error); }
+              setFailedLogin(true);
+            }
           }} value="Register"/>
         </form>
       </Modal>

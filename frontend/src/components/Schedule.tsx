@@ -7,16 +7,8 @@ import { setUserid, setPassword, NULL_ID } from "./Authentication";
 import "./Schedule.css";
 
 
-enum ScheduleModal {
-  ADD_ASSESSMENT,
-  ADD_CLASS,
-  ADD_RESERVED_SLOT,
-  EDIT_CLASS,
-  CHANGE_INSTITUTION,
-}
-
-
 export default function Schedule( ) {
+  //this will be needed for reactivity
   const [schedule, setSchedule] = createSignal<SlotData[]>([
     new SlotData("test", new Date(), new Date()),
     new SlotData("test2", new Date(), new Date()),
@@ -24,6 +16,7 @@ export default function Schedule( ) {
   ]);
 
 
+          //TODO: make bunch of modal components, will be chaos otherwise
   return (
     <>
       <div class="schedule">
@@ -33,7 +26,7 @@ export default function Schedule( ) {
           <div class="schedule-sidebar-element">Add Reserved Slot</div>
           <div class="schedule-sidebar-element">Edit Classes</div>
           <div class="schedule-sidebar-element">Change Institution</div>
-          <div class="schedule-sidebar-element" onclick={() => {setPassword(""); setUserid(NULL_ID)}} >Logout</div>
+          <div class="schedule-sidebar-element" onclick={() => {setActiveModal(NO_MODAL); setPassword(""); setUserid(NULL_ID)}} >Logout</div>
         </div>
         <div class="schedule-column schedule-list">
           <For each={schedule()}>

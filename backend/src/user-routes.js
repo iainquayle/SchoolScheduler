@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const db = require('./sql-db'); 
 
+const NULL_ID = -1;
+
 //TODO:
 //  login/register should return a user id if successful, wont be using a token becuase lazy and timing them out is a pain
 //  register should be default to non-admin
@@ -9,17 +11,24 @@ const db = require('./sql-db');
 
 
 router.post('/login', (req, res) => {
-  const { username, password } = req.body;
+  console.log("login called")
+  const { userHandle, password } = req.body;
 
+  // TODO: expand validation here as well as in register
   // Validate input data
-  if (!username || !password) {
+  if (!userHandle || !password) {
     return res.status(400).json({ error: 'Invalid input data' });
   }
 
-  // Perform database query to verify login credentials
-  const loginQuery = 'SELECT * FROM Users WHERE Username = ? AND Password = ?';
+  let loginQuery = '';
 
-  db.query(loginQuery, [username, password], (err, result) => {
+  if (userHandle.includes('@')) {
+    loginQuery = 'SELECT UserID FROM Users WHERE Email = ? AND Password = ?';
+  } else {
+    loginQuery = 'SELECT UserID FROM Users WHERE Username = ? AND Password = ?';
+  }
+
+  db.query(loginQuery, [userHandle, password], (err, result) => {
     if (err) {
       console.error('Error during login:', err);
       return res.status(500).json({ error: 'Internal Server Error' });
@@ -27,38 +36,44 @@ router.post('/login', (req, res) => {
 
     if (result.length > 0) {
       console.log('Login successful');
-      res.json({ message: 'Login successful' });
+      res.json({ userid: result[0].UserID });
     } else {
       console.log('Invalid credentials');
-      res.status(401).json({ error: 'Invalid credentials' });
+      res.json({ userid: NULL_ID });
     }
   });
 });
 
 router.post('/register', (req, res) => {
+  console.log("register called")
   const { username, password, email } = req.body;
-  // Validate input data
+
   if (!username || !password || !email) {
     return res.status(400).json({ error: 'Invalid input data' });
   }
 
-  // Perform database query to insert user
-  const insertUserQuery = `
-    INSERT INTO Users (Username, Password, Email) 
-    VALUES (?, ?, ?)
-  `;
-
   db.query(
-    insertUserQuery,
+    `INSERT INTO Users (Username, Password, Email) 
+    VALUES (?, ?, ?)`,
     [username, password, email],
     (insertErr, insertResult) => {
       if (insertErr) {
         console.error('Error registering user:', insertErr);
         return res.status(500).json({ error: 'Internal Server Error' });
       }
-
       console.log('User registered successfully');
-      res.json({ message: 'User registered successfully' });
+    }
+  );
+  db.query(
+    `SELECT UserID FROM Users WHERE Username = ?`,
+    [username],
+    (err, result) => {
+      if (err) {
+        console.error('Error during login:', err);
+        return res.status(500).json({ error: 'Internal Server Error' });
+      }
+      console.log('User ID retrieved successfully');
+      res.json({ userid: result[0].UserID });
     }
   );
 });
