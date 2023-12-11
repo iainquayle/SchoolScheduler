@@ -1,33 +1,30 @@
 import { createSignal, For } from 'solid-js'
-import { Modal, NO_MODAL } from "./Modal";
+import { Modal, setActiveModal, NO_MODAL } from "./Modal";
 import { SlotData, SlotElement } from './Slot';
 
 import { AuthenticationData, NULL_ID } from "./Authentication";
 
 import "./Schedule.css";
 
-//TODO:
-//  make slot component
-//  make assessment, class, and reserved slots components
-//    perhaps slots only show title and date, when clicked, modal will have more info as well as the functionality to edit and delete
-//  make modal for adding assessments, classes, and reserved slots
-//  make modal for user to follow class and insituition
-//  ...
-//
-//  also perhaps make some data class for passing around the auth info, just holds userid, password, and set functions so they can be cleared
-//  dont really want to make some kind of auth coockie, so passing info will have to do
+
+enum ScheduleModal {
+  ADD_ASSESSMENT,
+  ADD_CLASS,
+  ADD_RESERVED_SLOT,
+  EDIT_CLASS,
+  CHANGE_INSTITUTION,
+}
 
 interface ScheduleProps {
   authData: AuthenticationData;
 }
 
 export default function Schedule( props: ScheduleProps ) {
-
-  const temp_data = [
+  const [schedule, setSchedule] = createSignal<SlotData[]>([
     new SlotData("test", new Date(), new Date()),
     new SlotData("test2", new Date(), new Date()),
     new SlotData("test3", new Date(), new Date()),
-  ]
+  ]);
 
 
   return (
@@ -37,12 +34,12 @@ export default function Schedule( props: ScheduleProps ) {
           <div class="schedule-sidebar-element">Add Assessment</div>
           <div class="schedule-sidebar-element">Add Class</div>
           <div class="schedule-sidebar-element">Add Reserved Slot</div>
-          <div class="schedule-sidebar-element">Follow Class</div>
-          <div class="schedule-sidebar-element">Follow Institution</div>
+          <div class="schedule-sidebar-element">Edit Classes</div>
+          <div class="schedule-sidebar-element">Change Institution</div>
           <div class="schedule-sidebar-element" onclick={() => {props.authData.setPassword(""); props.authData.setID(NULL_ID)}} >Logout</div>
         </div>
         <div class="schedule-column schedule-list">
-          <For each={temp_data}>
+          <For each={schedule()}>
             {(slot) => <SlotElement data={slot} />}
           </For>
         </div>

@@ -1,6 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const db = require('./db'); // Adjust the path accordingly
+const db = require('./sql-db'); 
+
+//TODO:
+//  login/register should return a user id if successful, wont be using a token becuase lazy and timing them out is a pain
+//  register should be default to non-admin
+//  
 
 // Get all users
 router.get('/', (req, res) => {
@@ -15,7 +20,7 @@ router.get('/', (req, res) => {
 });
 
 // Get a specific user by ID
-router.get('/:userId', (req, res) => {
+router.get('/userId', (req, res) => {
   const userId = req.params.userId;
   db.query('SELECT * FROM Users WHERE UserID = ?', [userId], (err, results) => {
     if (err) {
@@ -30,7 +35,7 @@ router.get('/:userId', (req, res) => {
 });
 
 // Create a new user (registration)
-router.post('/', (req, res) => {
+router.post('/register', (req, res) => {
   const { Username, Password, FirstName, LastName, email, IsAdmin } = req.body;
   db.query(
     'INSERT INTO Users (Username, Password, FirstName, LastName, email, IsAdmin) VALUES (?, ?, ?, ?, ?, ?)',

@@ -12,6 +12,8 @@
   align-items: center;
   justify-content: center;
   background-color: var(--modal-cover-color);
+  max-height: 80vh;
+  max-width: 80vw;
 }
 
 .modal-content {
