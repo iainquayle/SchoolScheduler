@@ -1,13 +1,16 @@
-import { createSignal, For, Show } from 'solid-js'
+import { createSignal, For, Show, Setter } from 'solid-js'
 import { Modal, setActiveModal, NO_MODAL } from "./Modal";
 import { SlotData, SlotElement } from './Slot';
 
 import { setUserid, setPassword, isAdmin, NULL_ID } from "./Authentication";
 
 import "./Schedule.css";
+interface ScheduleProps {
+  setAdminPage: Setter<boolean>
+}
 
 
-export default function Schedule( ) {
+export default function Schedule( props: ScheduleProps ) {
   //this will be needed for reactivity
   const [schedule, setSchedule] = createSignal<SlotData[]>([
     new SlotData("test", new Date(), new Date()),
@@ -15,14 +18,13 @@ export default function Schedule( ) {
     new SlotData("test3", new Date(), new Date()),
   ]);
 
-
           //TODO: make bunch of modal components, will be chaos otherwise
   return (
     <>
       <div class="schedule">
         <div class="schedule-column schedule-sidebar">
           <Show when={isAdmin()}>
-            <div class="schedule-sidebar-element">Access Admin Tools</div>
+            <div class="schedule-sidebar-element" onclick={() => {setActiveModal(NO_MODAL); props.setAdminPage(true);}}>Access Admin Tools</div>
           </Show>
           <div class="schedule-sidebar-element">Add Assessment</div>
           <div class="schedule-sidebar-element">Add Class</div>

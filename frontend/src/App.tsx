@@ -6,7 +6,7 @@ import { userid, NULL_ID } from "./components/Authentication"
 
 
 export default function App() {
-  const [accessAdmin, setAccessAdmin] = createSignal(false);
+  const [adminPage, setAdminPage] = createSignal(false);
 
   return (
     <>
@@ -14,11 +14,11 @@ export default function App() {
         <Match when={userid() === NULL_ID}>
           <Landing />
         </Match>
-        <Match when={userid() !== NULL_ID && !accessAdmin()}>
-          <Schedule />          
+        <Match when={userid() !== NULL_ID && !adminPage()}>
+          <Schedule setAdminPage={setAdminPage} />          
         </Match>
-        <Match when={userid() !== NULL_ID && accessAdmin()}>
-          <Admin />
+        <Match when={userid() !== NULL_ID && adminPage()}>
+          <Admin setAccessAdmin={setAdminPage} />
         </Match>
       </Switch>
     </>

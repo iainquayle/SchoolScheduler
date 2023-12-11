@@ -1,3 +1,4 @@
+import { Setter } from 'solid-js'
 
 //TODO:
 //  - add admin
@@ -7,7 +8,11 @@
 
 //consider making a quick column that lists schools and courses
 
-export default function Admin() {
+interface AdminProps {
+  setAccessAdmin: Setter<boolean>
+}
+
+export default function Admin( props: AdminProps ) {
   return (
     <div>
       <h1>Admin</h1>
