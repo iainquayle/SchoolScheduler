@@ -7,13 +7,13 @@ const testRoutes = require('./test-routes');
 //const db = require('./db'); 
 
 app.use(cors({
-  origin: 'http://localhost:5173'
+  origin: '*'
 }));
 app.use(bodyParser.json());
 
 app.post('/', (req, res) => {
   console.log("called");
-  res.json({text: 'Hello World!'});
+  res.json({text: 'Hey Mom!'});
 });
 
 app.use('/user', userRoutes);

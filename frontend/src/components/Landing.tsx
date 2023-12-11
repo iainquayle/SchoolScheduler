@@ -1,7 +1,7 @@
 // Home.tsx
 import { createSignal, Show } from "solid-js";
 import {Modal, setActiveModal} from "./Modal";
-import { Routes } from "./Routes";
+import { Routes, standardPost } from "./Routes";
 import { setUserid, setPassword } from "./Authentication";
 
 import "./Landing.css";
@@ -46,20 +46,18 @@ export default function Landing( ) {
               console.log("clicked")
               if (form != null) {
                 try {
-                  const response = await fetch("http://localhost:8080/", {
-                    method: 'POST',
-                    //mode: 'cors',
-                    headers: {
-                      'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ userHandle: form.userHandle.value, password: form.password.value }),
-                  });
-                  console.log("response");
-                  console.log(response.json());
-                } catch (error) {
-                  console.error('Login failed', error);
-                  setFailedLogin(true);
-                }
+                  const response = await (standardPost(Routes.Server + Routes.Test + Routes.Login, 
+                    { userHandle: form.userHandle.value, password: form.password.value } ));
+                  if (response.ok) {
+                    const json = await response.json();
+                    if (json.userid != null) {
+                      setUserid(json.userid);
+                      setPassword(form.password.value);
+                      return;
+                    }  
+                  } 
+                } catch (error) {}
+                setFailedLogin(true);
               }
             }} value="Sign-in"/>
           </div>

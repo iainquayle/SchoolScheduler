@@ -7,83 +7,60 @@ const db = require('./sql-db');
 //  register should be default to non-admin
 //  
 
-// Get all users
-router.get('/', (req, res) => {
-  db.query('SELECT * FROM Users', (err, results) => {
+
+router.post('/login', (req, res) => {
+  const { username, password } = req.body;
+
+  // Validate input data
+  if (!username || !password) {
+    return res.status(400).json({ error: 'Invalid input data' });
+  }
+
+  // Perform database query to verify login credentials
+  const loginQuery = 'SELECT * FROM Users WHERE Username = ? AND Password = ?';
+
+  db.query(loginQuery, [username, password], (err, result) => {
     if (err) {
-      console.error('Error fetching users:', err);
-      res.status(500).json({ error: 'Internal Server Error' });
+      console.error('Error during login:', err);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+    if (result.length > 0) {
+      console.log('Login successful');
+      res.json({ message: 'Login successful' });
     } else {
-      res.json(results);
+      console.log('Invalid credentials');
+      res.status(401).json({ error: 'Invalid credentials' });
     }
   });
 });
 
-// Get a specific user by ID
-router.get('/userId', (req, res) => {
-  const userId = req.params.userId;
-  db.query('SELECT * FROM Users WHERE UserID = ?', [userId], (err, results) => {
-    if (err) {
-      console.error('Error fetching user:', err);
-      res.status(500).json({ error: 'Internal Server Error' });
-    } else if (results.length === 0) {
-      res.status(404).json({ error: 'User not found' });
-    } else {
-      res.json(results[0]);
-    }
-  });
-});
-
-// Create a new user (registration)
 router.post('/register', (req, res) => {
-  const { Username, Password, FirstName, LastName, email, IsAdmin } = req.body;
+  const { username, password, email } = req.body;
+  // Validate input data
+  if (!username || !password || !email) {
+    return res.status(400).json({ error: 'Invalid input data' });
+  }
+
+  // Perform database query to insert user
+  const insertUserQuery = `
+    INSERT INTO Users (Username, Password, Email) 
+    VALUES (?, ?, ?)
+  `;
+
   db.query(
-    'INSERT INTO Users (Username, Password, FirstName, LastName, email, IsAdmin) VALUES (?, ?, ?, ?, ?, ?)',
-    [Username, Password, FirstName, LastName, email, IsAdmin],
-    (err, results) => {
-      if (err) {
-        console.error('Error creating user:', err);
-        res.status(500).json({ error: 'Internal Server Error' });
-      } else {
-        res.json({ message: 'User created successfully' });
+    insertUserQuery,
+    [username, password, email],
+    (insertErr, insertResult) => {
+      if (insertErr) {
+        console.error('Error registering user:', insertErr);
+        return res.status(500).json({ error: 'Internal Server Error' });
       }
+
+      console.log('User registered successfully');
+      res.json({ message: 'User registered successfully' });
     }
   );
-});
-
-// Update a user by ID
-router.put('/:userId', (req, res) => {
-  const userId = req.params.userId;
-  const { FirstName, LastName, email, IsAdmin } = req.body;
-  db.query(
-    'UPDATE Users SET FirstName = ?, LastName = ?, email = ?, IsAdmin = ? WHERE UserID = ?',
-    [FirstName, LastName, email, IsAdmin, userId],
-    (err, results) => {
-      if (err) {
-        console.error('Error updating user:', err);
-        res.status(500).json({ error: 'Internal Server Error' });
-      } else if (results.affectedRows === 0) {
-        res.status(404).json({ error: 'User not found' });
-      } else {
-        res.json({ message: 'User updated successfully' });
-      }
-    }
-  );
-});
-
-// Delete a user by ID
-router.delete('/:userId', (req, res) => {
-  const userId = req.params.userId;
-  db.query('DELETE FROM Users WHERE UserID = ?', [userId], (err, results) => {
-    if (err) {
-      console.error('Error deleting user:', err);
-      res.status(500).json({ error: 'Internal Server Error' });
-    } else if (results.affectedRows === 0) {
-      res.status(404).json({ error: 'User not found' });
-    } else {
-      res.json({ message: 'User deleted successfully' });
-    }
-  });
 });
 
 module.exports = router;

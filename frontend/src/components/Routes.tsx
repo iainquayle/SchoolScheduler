@@ -5,3 +5,13 @@ export enum Routes {
   Login = "/login",
   Register = "/register",
 }
+
+export async function standardPost(url: string, body: any): Promise<Response> {
+  return await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
+}

@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 
-router.get('/login', (req, res) => {
+router.post('/login', (req, res) => {
+  console.log("test login")
   console.log(req.params)
-  console.log("called")
   res.json({userid: 1});
 });
 
