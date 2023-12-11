@@ -31,36 +31,28 @@ export default function Landing( ) {
           <div>Invalid username or password</div>
         </Show>
         <form name={LOGIN_FORM} id={LOGIN_FORM}>
-          <div>
-            <label for="userHandle">Username or Email</label>
-            <input type="text" name="userHandle"/>
-          </div>
-          <div>
-            <label for="password">Password</label>
-            <input type="password" name="password" />
-          </div>
-          <div>
-            <input type="button" onclick={async () => {
-              const form = document.getElementById(LOGIN_FORM) as HTMLFormElement;
-              //fetch login, if successful, set userid and password, else set failedLogin
-              console.log("clicked")
-              if (form != null) {
-                try {
-                  const response = await (standardPost(Routes.Server + Routes.Test + Routes.Login, 
-                    { userHandle: form.userHandle.value, password: form.password.value } ));
-                  if (response.ok) {
-                    const json = await response.json();
-                    if (json.userid != null) {
-                      setUserid(json.userid);
-                      setPassword(form.password.value);
-                      return;
-                    }  
-                  } 
-                } catch (error) {}
-                setFailedLogin(true);
-              }
-            }} value="Sign-in"/>
-          </div>
+          <label for="userHandle">Username or Email</label>
+          <input type="text" name="userHandle"/>
+          <label for="password">Password</label>
+          <input type="password" name="password" />
+          <input type="button" onclick={async () => {
+            const form = document.getElementById(LOGIN_FORM) as HTMLFormElement;
+            if (form != null) {
+              try {
+                const response = await (standardPost(Routes.Server + Routes.User + Routes.Login, 
+                  { userHandle: form.userHandle.value, password: form.password.value } ));
+                if (response.ok) {
+                  const json = await response.json();
+                  if (json.userid != null) {
+                    setUserid(json.userid);
+                    setPassword(form.password.value);
+                    return;
+                  }  
+                } 
+              } catch (error) { console.log(error); }
+              setFailedLogin(true);
+            }
+          }} value="Sign-in"/>
         </form>
       </Modal>
       <Modal title="Register" modalType={ModalType.REGISTRATION}>
@@ -68,26 +60,15 @@ export default function Landing( ) {
           <div>Email or username taken, or password invalid</div>
         </Show>
         <form name={REGISTRATION_FORM} id={REGISTRATION_FORM}>
-          <div>
-            <label for="username">Username</label>
-            <input type="text" name="username"/>
-          </div>
-          <div>
-            <label for="email">Email</label>
-            <input type="email" name="email"/> 
-          </div>
-          <div>
-            <label for="password">Password</label>
-            <input type="password" name="password" />
-          </div>
-          <div>
-            <input type="button" onclick={() => {
-              const form = document.getElementById(REGISTRATION_FORM) as HTMLFormElement;
-              if (form != null) {
-                const username = form.username.value as string;
-              }
-            }} value="Register"/>
-          </div>
+          <label for="username">Username</label>
+          <input type="text" name="username"/>
+          <label for="email">Email</label>
+          <input type="email" name="email"/> 
+          <label for="password">Password</label>
+          <input type="password" name="password" />
+          <input type="button" onclick={async () => {
+            const form = document.getElementById(REGISTRATION_FORM) as HTMLFormElement;
+          }} value="Register"/>
         </form>
       </Modal>
     </div>
