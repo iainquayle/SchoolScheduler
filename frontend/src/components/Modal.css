@@ -12,14 +12,14 @@
   align-items: center;
   justify-content: center;
   background-color: var(--modal-cover-color);
-  max-height: 80vh;
-  max-width: 80vw;
 }
 
 .modal-content {
   padding: 1em;
   border-radius: 1em;
   background-color: var(--background-secondary); 
+  max-height: 80%;
+  max-width: 80%;
 }
 
 .modal-header {

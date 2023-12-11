@@ -6,7 +6,12 @@ const testRoutes = require('./test-routes');
 
 app.use(express.json());
 
-app.use('/users', userRoutes);
+app.get('/', (req, res) => {
+  console.log("called");
+  res.send('Hello World!');
+});
+
+app.use('/user', userRoutes);
 app.use('/test', testRoutes);
 
 const PORT = process.env.PORT || 8080;

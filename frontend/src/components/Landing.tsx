@@ -1,14 +1,10 @@
 // Home.tsx
 import { createSignal, Show } from "solid-js";
 import {Modal, setActiveModal} from "./Modal";
-
-import { AuthenticationData } from "./Authentication";
+import { Routes } from "./Routes";
+import { setUserid, setPassword } from "./Authentication";
 
 import "./Landing.css";
-
-interface LandingProps {
-  authData: AuthenticationData;
-}
 
 enum ModalType {
   LOGIN = "login",
@@ -19,8 +15,7 @@ const LOGIN_FORM = "login-form";
 const REGISTRATION_FORM = "registration-form";
 
 
-export default function Landing(props: LandingProps) {
-  const [userNameOrEmail, setUserNameOrEmail] = createSignal("");
+export default function Landing( ) {
   const [failedLogin, setFailedLogin] = createSignal(false);
 
   //cant get this.form to work for some reason, so will just do this. too bad
@@ -48,35 +43,27 @@ export default function Landing(props: LandingProps) {
             <input type="button" onclick={() => {
               const form = document.getElementById(LOGIN_FORM) as HTMLFormElement;
               //fetch login, if successful, set userid and password, else set failedLogin
+              console.log("clicked")
               if (form != null) {
-                const userHandle = form.userHandle.value as string;
-                /*
-    e.preventDefault();
-
-    // Assuming you have a login function that sends a POST request to the login endpoint
-    try {
-      const response = await fetch('/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username: username(), password: password() }),
-      });
-
-      if (response.ok) {
-        console.log('Login successful');
-        setUserid(username());
-        setPassword(password());
-        onLogin();
-      } else {
-        console.log('Invalid credentials');
-        // Handle the case where login failed
-      }
-    } catch (error) {
-      console.error('Error during login:', error);
-      // Handle the error
-    }
-                */
+                try {
+                  const response = fetch("http://localhost:8080/", {
+                    method: 'GET',
+                    mode: 'cors',
+                    headers: {
+                      //'Content-Type': 'application/json',
+                    },
+                    //body: JSON.stringify({ userHandle: form.userHandle.value, password: form.password.value }),
+                  });
+                  if (response.ok) {
+                    console.log('Login successful');
+                  } else {
+                    console.error('Login failed');
+                    setFailedLogin(true);
+                  }
+                } catch (error) {
+                  console.error('Login failed', error);
+                  setFailedLogin(true);
+                }
               }
             }} value="Sign-in"/>
           </div>

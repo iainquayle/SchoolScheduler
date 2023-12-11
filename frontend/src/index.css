@@ -3,6 +3,7 @@
   --background-primary: rgb(20, 20, 25);
   --background-secondary: rgb(25, 25, 30);
   --background-tertiary: rgb(30, 30, 35);
+  --background-interaction: rgb(45, 35, 30);
 
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -26,4 +27,11 @@ button {
   padding: .5em;
   border-radius: .5em;
   background-color: var(--background-secondary);
+}
+
+input {
+  border: solid 1px var(--background-primary);
+  padding: .5em;
+  border-radius: .5em;
+  background-color: var(--background-interaction);
 }
