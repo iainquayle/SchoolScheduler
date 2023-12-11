@@ -4,9 +4,10 @@
 //  - add school
 //  - add class
 //  - equate assessments
-//
 
-export function Admin() {
+//consider making a quick column that lists schools and courses
+
+export default function Admin() {
   return (
     <div>
       <h1>Admin</h1>
