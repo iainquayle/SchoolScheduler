@@ -12,5 +12,6 @@ export const CONSTANTS = {
     promoteUser: "/promote_user",
     data: "/data",
     schools: "/schools",
+    followSchool: "/follow_school",
   }
 }

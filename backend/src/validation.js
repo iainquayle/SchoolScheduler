@@ -9,6 +9,9 @@ exports.USER = 0;
 
 exports.validateUser = async (token) => {
   out = false;
+  if (!this.validateInput(token.UserID) || !this.validateInput(token.Password)) {
+    return out;
+  }
   await db.query(
     `SELECT UserID FROM Users WHERE UserID = ? AND Password = ?`,
     [token.UserID, token.Password],
@@ -25,6 +28,9 @@ exports.validateUser = async (token) => {
 
 exports.validateAdmin = async (token) => {
   out = false;
+  if (!this.validateInput(token.UserID) || !this.validateInput(token.Password)) {
+    return out;
+  }
   await db.query(
     `SELECT Admin FROM Users WHERE UserID = ? AND Password = ?`,
     [token.UserID, token.Password],
@@ -39,11 +45,24 @@ exports.validateAdmin = async (token) => {
   return out;
 }
 
-//characters allowed are alphanumeric, _, ., and - 
-exports.validateSafeInput = (data) => {
+exports.validateInputSpaced = (data) => {
   if (Array.isArray(data)) {
     for (let i = 0; i < data.length; i++) {
-      if (!exports.validateSafeInput(data[i])) {
+      if (!exports.validateInputSpaced(data[i])) {
+        return false;
+      }
+    }
+    return true;
+  } else {
+    return /^[a-zA-Z0-9\s]+$/.test(data);
+  }
+}
+
+//characters allowed are alphanumeric, _, ., and - 
+exports.validateInput = (data) => {
+  if (Array.isArray(data)) {
+    for (let i = 0; i < data.length; i++) {
+      if (!exports.validateInput(data[i])) {
         return false;
       }
     }

@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const db = require('./sql-db');
-const {validateSafeInput, validateAdmin, ADMIN} = require('./validation');
+const {validateInput, validateAdmin, ADMIN} = require('./validation');
 
 
 router.post('/add_school', (req, res) => {
   const { token, body } = req.body;
-  if (!validateAdmin(token) || !validateSafeInput(body.SchoolName)) {
+  if (!validateAdmin(token) || !validateInput(body.SchoolName)) {
     return res.status(400).json({ error: 'Invalid input data' });
   }
 
@@ -29,7 +29,7 @@ router.post('/add_course', (req, res) => {
 
 router.post('/promote_user', (req, res) => {
   const {token, body} = req.body;
-  if (!validateAdmin(token) || !validateSafeInput(body.Username)) {
+  if (!validateAdmin(token) || !validateInput(body.Username)) {
     return res.status(400).json({ error: 'Invalid input data' });
   }
 

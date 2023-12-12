@@ -25,6 +25,7 @@ function configure(db) {
       Username VARCHAR(45) NOT NULL UNIQUE,
       Password VARCHAR(45) NOT NULL,
       Email VARCHAR(45) NOT NULL UNIQUE,
+      SchoolID INT,
       Admin TINYINT(1) NOT NULL DEFAULT 0,
       PRIMARY KEY (UserID))`,
 
@@ -62,12 +63,27 @@ function configure(db) {
       console.error('Error checking for admin:', err);
     } else {
       if (result.length === 0) {
-        db.query(`INSERT INTO Users (Username, Password, Email, Admin) VALUES ('admin', 'admin', 
-          'admin@scheduler.com', 1)`, (err, _) => {
+        db.query(`INSERT INTO Users (Username, Password, Email, SchoolID, Admin) VALUES ('admin', 'admin', 
+          'admin@scheduler.com', NULL, 1)`, (err, _) => {
           if (err) {
             console.error('Error creating admin:', err);
           } else {
             console.log('Admin created');
+          }
+        });
+      }
+    }
+  });
+  db.query(`SELECT * FROM Schools WHERE LOWER(SchoolName) = LOWER('University of Calgary')`, (err, result) => {
+    if (err) {
+      console.error('Error checking for school:', err);
+    } else {
+      if (result.length === 0) {
+        db.query(`INSERT INTO Schools (SchoolName, SchoolAbbreviation) VALUES ('University of Calgary', 'U of C')`, (err, _) => {
+          if (err) {
+            console.error('Error creating uofc:', err);
+          } else {
+            console.log('U of C created');
           }
         });
       }
@@ -78,9 +94,9 @@ function configure(db) {
 function drop(db) {
   db.query('DROP DATABASE IF EXISTS Scheduler', (err, _) => {
     if (err) {
-      console.error('Error dropping database:', err);
+      console.error('Error clearing database:', err);
     } else {
-      console.log('Database dropped');
+      console.log('Database cleared');
     }
   });
 }

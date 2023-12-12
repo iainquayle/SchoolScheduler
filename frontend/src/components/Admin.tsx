@@ -24,13 +24,15 @@ export default function Admin( props: AdminProps ) {
   const [schools, setSchools] = createSignal([]);
   //const [classes, setClasses] = createSignal();
 
+  fetchSchools(setSchools);
+
   return (
     <>
       <div class="page" style="grid-template-columns: 1fr 1fr 1fr;">
         <div class="column sidebar">
           <div class="column-element sidebar-element" onclick={() => {setActiveModal(AdminModals.ADD_SCHOOL);}}>Add School</div>
           <div class="column-element sidebar-element">Add Class</div>
-          <div class="column-element sidebar-element" onclick={() => {setActiveModal(AdminModals.PROMOTE_USER)}}>Promote to Admin</div>
+          <div class="column-element sidebar-element" onclick={() => {setActiveModal(AdminModals.PROMOTE_USER)}}>Promote User</div>
           <div class="column-element sidebar-element" onclick={() => {fetchSchools(setSchools)}}>Refresh</div>
           <div class="column-element sidebar-element" onclick={() => {props.setAccessAdmin(false)}}>Back</div>
         </div>
@@ -51,6 +53,7 @@ export default function Admin( props: AdminProps ) {
           <input type="button" value="Promote" onclick={async () => {
             const form = document.getElementById(PROMOTE_USER_FORM) as HTMLFormElement;
             await promoteUser(form.username.value);
+            setActiveModal(NO_MODAL);
           }}/>
         </form>
       </Modal>
@@ -63,6 +66,7 @@ export default function Admin( props: AdminProps ) {
           <input type="button" value="Add" onclick={async () => {
             const form = document.getElementById(ADD_SCHOOL_FORM) as HTMLFormElement;
             await addSchool(form.schoolname.value, form.schoolabbreviation.value);
+            setActiveModal(NO_MODAL);
           }}/>
         </form>
       </Modal>
