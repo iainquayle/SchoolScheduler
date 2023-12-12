@@ -10,3 +10,13 @@ export async function addSchool(schoolName: string, schoolAbbreviation: string) 
     } 
   } catch (error) { console.log(error); }
 }
+
+export async function promoteUser(username: string) {
+  try {
+    const response = await (postWithToken(CONSTANTS.routes.admin + CONSTANTS.routes.promoteUser,
+      {  Username: username} ));
+    if (response.ok) {
+      //const json = await response.json();
+    } 
+  } catch (error) { console.log(error); }
+}

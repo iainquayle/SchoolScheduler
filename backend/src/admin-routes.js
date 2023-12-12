@@ -27,7 +27,7 @@ router.post('/add_school', (req, res) => {
 router.post('/add_course', (req, res) => {
 });
 
-router.post('/promote_admin', (req, res) => {
+router.post('/promote_user', (req, res) => {
   const {token, body} = req.body;
   if (!validateAdmin(token) || !validateSafeInput(body.Username)) {
     return res.status(400).json({ error: 'Invalid input data' });

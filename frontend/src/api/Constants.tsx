@@ -9,6 +9,7 @@ export const CONSTANTS = {
     register: "/register",
     admin: "/admin",
     addSchool: "/add_school",
+    promoteUser: "/promote_user",
     data: "/data",
     schools: "/schools",
   }
