@@ -1,15 +1,18 @@
 const express = require('express');
 const router = express.Router();
 const db = require('./sql-db');
-
-const {validateSafeInput, validateCredentials, ADMIN} = require('./validation');
+const {validateSafeInput, validateAdmin, ADMIN} = require('./validation');
 
 
 router.post('/add_school', (req, res) => {
-  const { userid, password, schoolname } = req.body;
-  if (validateCredentials(userid, password) !== ADMIN || !validateSafeInput(schoolname)) {
+  const { userid, password, schoolname, schoolabbreviation } = req.body;
+
+  wtf = validateAdmin(userid, password);
+  console.log(wtf);
+  if (!validateAdmin(userid, password) || !validateSafeInput(schoolname)) {
     return res.status(400).json({ error: 'Invalid input data' });
   }
+  console.log("here2");
 
   db.query(
     `INSERT INTO Schools (SchoolName) 

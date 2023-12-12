@@ -4,6 +4,8 @@ const app = express();
 const bodyParser = require('body-parser');
 const userRoutes = require('./user-routes'); 
 const testRoutes = require('./test-routes');
+const adminRoutes = require('./admin-routes');
+//const dataRoutes = require('./data-routes');
 
 app.use(cors({
   origin: '*'
@@ -17,6 +19,8 @@ app.post('/', (_, res) => {
 
 app.use('/user', userRoutes);
 app.use('/test', testRoutes);
+app.use('/admin', adminRoutes);
+//app.use('/data', dataRoutes);
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {

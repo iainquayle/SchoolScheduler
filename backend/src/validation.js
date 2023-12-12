@@ -4,24 +4,40 @@ exports.INVALID = -1;
 exports.ADMIN = 1;
 exports.USER = 0;
 
-exports.validateCredentials = (userid, password) => {
+exports.validateUser = (userid, password) => {
   db.query(
-    `SELECT Admin FROM Users WHERE UserID = ? AND Password = ?`,
+    `SELECT UserID FROM Users WHERE UserID = ? AND Password = ?`,
     [userid, password],
     (err, result) => {
       if (err) {
-        console.error('Error validating credentials:', err);
-        return exports.INVALID;
+        console.error('Error validating user:', err);
+        return false; 
       }
 
       if (result.length > 0) {
-        console.log('Credentials validated');
-        return result[0].Admin;
+        console.log('User validated');
+        return true;
       } else {
-        console.log('Invalid credentials');
-        return exports.INVALID;
+        console.log('Invalid user');
+        return false;
       }
   });
+}
+
+exports.validateAdmin = async (userid, password) => {
+  out = false;
+  await db.query(
+    `SELECT Admin FROM Users WHERE UserID = ? AND Password = ?`,
+    [userid, password],
+    (err, result) => {
+      if (result.length > 0) {
+        console.log('Admin validated');
+        out = result[0].Admin == 1;
+      } else {
+        console.log('Invalid admin');
+      }
+  });
+  return out;
 }
 
 //characters allowed are alphanumeric, _, ., and - 

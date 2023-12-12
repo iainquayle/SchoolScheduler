@@ -4,6 +4,8 @@ export enum Routes {
   User = "/user",
   Login = "/login",
   Register = "/register",
+  Admin = "/admin",
+  AddSchool = "/add_school",
 }
 
 export async function standardPost(url: string, body: any): Promise<Response> {
