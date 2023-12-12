@@ -74,7 +74,7 @@ export default function Landing( ) {
             if (form != null) {
               try {
                 const response = await (standardPost(Routes.Server + Routes.User + Routes.Register, 
-                  { username: form.username.value, password: form.password.value, email: form.email.value } ));
+                  { username: form.username.value, password: form.password.value, email: form.email.value, school: form.school.value} ));
                 if (response.ok) {
                   const json = await response.json();
                   if (json.userid != null) {
