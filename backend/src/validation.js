@@ -1,5 +1,8 @@
 const db = require('./sql-db');
 
+//TODO: need to make a validation that allows for spaces, no quotes though and only select special characters
+//as well need to make validate user have built in injection protection
+
 exports.INVALID = -1;
 exports.ADMIN = 1;
 exports.USER = 0;
