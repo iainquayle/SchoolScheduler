@@ -23,9 +23,21 @@ interface AdminProps {
   setAccessAdmin: Setter<boolean>
 }
 
+
+const [schools, setSchools] = createSignal([]);
+async function getSchools() {
+  try {
+    const response = await (standardPost(Routes.Server + Routes.Data + Routes.Schools,
+      { userid: userid(), password: password() }));
+    if (response.ok) {
+      const json = await response.json();
+      setSchools(json.schools);
+    } 
+  } catch (error) { console.log(error); }
+}
+
 export default function Admin( props: AdminProps ) {
-  const [schools, setSchools] = createSignal();
-  const [classes, setClasses] = createSignal();
+  //const [classes, setClasses] = createSignal();
 
   return (
     <>
@@ -34,10 +46,15 @@ export default function Admin( props: AdminProps ) {
           <div class="admin-element" onclick={() => {setActiveModal(AdminModals.ADD_SCHOOL);}}>Add School</div>
           <div class="admin-element">Add Class</div>
           <div class="admin-element">Promote to Admin</div>
-          <div class="admin-element">Refresh</div>
+          <div class="admin-element" onclick={() => {getSchools()}}>Refresh</div>
           <div class="admin-element" onclick={() => {props.setAccessAdmin(false)}}>Back</div>
         </div>
         <div class="admin-column">
+          <For each={schools()}>
+            {(school) => (
+              <div class="admin-element">{school.SchoolName}</div>
+            )}
+          </For>
         </div>
         <div class="admin-column">
         </div>
