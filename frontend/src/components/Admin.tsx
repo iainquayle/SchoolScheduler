@@ -30,7 +30,7 @@ export default function Admin( props: AdminProps ) {
           <div class="column-element sidebar-element" onclick={() => {setActiveModal(AdminModals.ADD_SCHOOL);}}>Add School</div>
           <div class="column-element sidebar-element">Add Class</div>
           <div class="column-element sidebar-element">Promote to Admin</div>
-          <div class="column-element sidebar-element" onclick={() => {}}>Refresh</div>
+          <div class="column-element sidebar-element" onclick={() => {fetchSchools(setSchools)}}>Refresh</div>
           <div class="column-element sidebar-element" onclick={() => {props.setAccessAdmin(false)}}>Back</div>
         </div>
         <div class="column list">
@@ -51,6 +51,7 @@ export default function Admin( props: AdminProps ) {
           <input type="text" id="schoolabbreviation" name="schoolabbreviation" />
           <input type="button" value="Add" onclick={async () => {
             const form = document.getElementById(ADD_SCHOOL_FORM) as HTMLFormElement;
+            await addSchool(form.schoolname.value, form.schoolabbreviation.value);
           }}/>
         </form>
       </Modal>

@@ -5,13 +5,13 @@ import {setUserID, setPassword, setIsAdmin} from "./Authentication";
 export async function login(userHandle: string, password: string ) {
   try {
     const response = await (postToServer(CONSTANTS.routes.user + CONSTANTS.routes.login, 
-      { userHandle: userHandle, password: password } ));
+      { UserHandle: userHandle, Password: password } ));
     if (response.ok) {
       const json = await response.json();
-      if (json.userid != null && json.userid != CONSTANTS.null_id) {
-        setUserID(json.userid);
+      if (json.UserID != null && json.UserID != CONSTANTS.null_id) {
+        setUserID(json.UserID);
         setPassword(password);
-        setIsAdmin(json.admin);
+        setIsAdmin(json.Admin);
         return;
       }  
     } 
@@ -21,11 +21,11 @@ export async function login(userHandle: string, password: string ) {
 export async function register(username: string, password: string, email: string, school: string) {
   try {
     const response = await (postToServer(CONSTANTS.routes.user + CONSTANTS.routes.register,
-      { username: username, password: password, email: email, school: school} ));
+      { Username: username, Password: password, Email: email, School: school} ));
     if (response.ok) {
       const json = await response.json();
-      if (json.userid != null) {
-        setUserID(json.userid);
+      if (json.UserID != null) {
+        setUserID(json.UserID);
         setPassword(password);
         return;
       }  

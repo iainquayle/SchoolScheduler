@@ -4,9 +4,11 @@ const db = require('./sql-db');
 
 const {validateSafeInput, validateUser } = require('./validation');
 
+
+//TODO: make this take in search parameters
 router.post('/schools', (req, res) => {
-  const {userid, password} = req.body;
-  if (!validateUser(userid, password)) {
+  const {token, body} = req.body;
+  if (!validateUser(token)) {
     return res.status(400).json({ error: 'Invalid input data' });
   }
 

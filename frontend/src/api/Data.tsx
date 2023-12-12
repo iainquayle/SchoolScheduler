@@ -1,12 +1,10 @@
-import {postToServer} from "./Util";
-import {CONSTANTS} from "./Constants";
-import { userID, password } from "./Authentication";
+import { postWithToken } from "./Util";
+import { CONSTANTS } from "./Constants";
 
 export async function fetchSchools(setSchoolList: any) {
-  const response = await postToServer(CONSTANTS.routes.data + CONSTANTS.routes.schools, {
-    userID: userID(),
-    password: password(),
-  });
-  const data = await response.json().schools;
+  const response = await postWithToken(CONSTANTS.routes.data + CONSTANTS.routes.schools, { });
+  const result = await response.json();
+  //console.log(result);
+  const data = await result.schools;
   setSchoolList(data);
 }

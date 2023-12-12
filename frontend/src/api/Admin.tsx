@@ -1,11 +1,10 @@
-import {postToServer} from "./Util";
-import {CONSTANTS} from "./Constants";
-import { userID, password } from "./Authentication";
+import { postWithToken } from "./Util";
+import { CONSTANTS } from "./Constants";
 
-export async function addSchool(schoolName: string) {
+export async function addSchool(schoolName: string, schoolAbbreviation: string) {
   try {
-    const response = await (postToServer(CONSTANTS.routes.admin + CONSTANTS.routes.addSchool,
-      { userid: userID(), password: password(), schoolname: schoolName, schoolabbreviation: ""} ));
+    const response = await (postWithToken(CONSTANTS.routes.admin + CONSTANTS.routes.addSchool,
+      {  SchoolName: schoolName, SchoolAbbreviation: schoolAbbreviation} ));
     if (response.ok) {
       //const json = await response.json();
     } 

@@ -7,11 +7,11 @@ exports.INVALID = -1;
 exports.ADMIN = 1;
 exports.USER = 0;
 
-exports.validateUser = async (userid, password) => {
+exports.validateUser = async (token) => {
   out = false;
   await db.query(
     `SELECT UserID FROM Users WHERE UserID = ? AND Password = ?`,
-    [userid, password],
+    [token.UserID, token.Password],
     (err, result) => {
       if (result.length > 0) {
         console.log('User validated');
@@ -23,11 +23,11 @@ exports.validateUser = async (userid, password) => {
   return out;
 }
 
-exports.validateAdmin = async (userid, password) => {
+exports.validateAdmin = async (token) => {
   out = false;
   await db.query(
     `SELECT Admin FROM Users WHERE UserID = ? AND Password = ?`,
-    [userid, password],
+    [token.UserID, token.Password],
     (err, result) => {
       if (result.length > 0) {
         console.log('Admin validated');

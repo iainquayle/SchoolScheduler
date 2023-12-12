@@ -5,15 +5,15 @@ const {validateSafeInput, validateAdmin, ADMIN} = require('./validation');
 
 
 router.post('/add_school', (req, res) => {
-  const { userid, password, schoolname, schoolabbreviation } = req.body;
-  if (!validateAdmin(userid, password) || !validateSafeInput(schoolname)) {
+  const { token, body } = req.body;
+  if (!validateAdmin(token) || !validateSafeInput(body.SchoolName)) {
     return res.status(400).json({ error: 'Invalid input data' });
   }
 
   db.query(
-    `INSERT INTO Schools (SchoolName) 
-      VALUES (?)`,
-    [schoolname],
+    `INSERT INTO Schools (SchoolName, SchoolAbbreviation) 
+      VALUES (?, ?)`,
+    [body.SchoolName, body.SchoolAbbreviation],
     (insertErr, insertResult) => {
       if (insertErr) {
         console.error('Error adding school:', insertErr);
@@ -28,14 +28,14 @@ router.post('/add_course', (req, res) => {
 });
 
 router.post('/promote_admin', (req, res) => {
-  const { userid, password, username } = req.body;
-  if (!validateAdmin(userid, password) || !validateSafeInput(targetid)) {
+  const {token, body} = req.body;
+  if (!validateAdmin(token) || !validateSafeInput(body.Username)) {
     return res.status(400).json({ error: 'Invalid input data' });
   }
 
   db.query(
     `UPDATE Users SET Admin = 1 WHERE Username = ?`,
-    [username],
+    [body.Username],
     (insertErr, insertResult) => {
       if (insertErr) {
         console.error('Error promoting admin:', insertErr);

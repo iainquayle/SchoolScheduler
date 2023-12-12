@@ -31,6 +31,7 @@ function configure(db) {
     `CREATE TABLE IF NOT EXISTS Schools (
       SchoolID INT NOT NULL AUTO_INCREMENT,
       SchoolName VARCHAR(45) NOT NULL UNIQUE,
+      SchoolAbbreviation VARCHAR(45) NOT NULL,
       PRIMARY KEY (SchoolID))`,
 
     `CREATE TABLE IF NOT EXISTS Courses (
