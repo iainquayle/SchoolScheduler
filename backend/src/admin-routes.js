@@ -6,13 +6,9 @@ const {validateSafeInput, validateAdmin, ADMIN} = require('./validation');
 
 router.post('/add_school', (req, res) => {
   const { userid, password, schoolname, schoolabbreviation } = req.body;
-
-  wtf = validateAdmin(userid, password);
-  console.log(wtf);
   if (!validateAdmin(userid, password) || !validateSafeInput(schoolname)) {
     return res.status(400).json({ error: 'Invalid input data' });
   }
-  console.log("here2");
 
   db.query(
     `INSERT INTO Schools (SchoolName) 
@@ -33,7 +29,7 @@ router.post('/add_course', (req, res) => {
 
 router.post('/promote_admin', (req, res) => {
   const { userid, password, username } = req.body;
-  if (validateCredentials(userid, password) !== ADMIN || !validateSafeInput(targetid)) {
+  if (!validateAdmin(userid, password) || !validateSafeInput(targetid)) {
     return res.status(400).json({ error: 'Invalid input data' });
   }
 

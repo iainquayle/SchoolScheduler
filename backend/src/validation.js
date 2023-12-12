@@ -4,24 +4,20 @@ exports.INVALID = -1;
 exports.ADMIN = 1;
 exports.USER = 0;
 
-exports.validateUser = (userid, password) => {
-  db.query(
+exports.validateUser = async (userid, password) => {
+  out = false;
+  await db.query(
     `SELECT UserID FROM Users WHERE UserID = ? AND Password = ?`,
     [userid, password],
     (err, result) => {
-      if (err) {
-        console.error('Error validating user:', err);
-        return false; 
-      }
-
       if (result.length > 0) {
         console.log('User validated');
-        return true;
+        out = true;
       } else {
         console.log('Invalid user');
-        return false;
       }
   });
+  return out;
 }
 
 exports.validateAdmin = async (userid, password) => {
