@@ -1,15 +1,10 @@
 import { createSignal, Setter, For } from 'solid-js'
 import { Modal, setActiveModal, NO_MODAL } from "./Modal";
-import { Routes, standardPost } from "./Routes";
-import { userid, password } from './Authentication';
+import { userID, password } from '../api/Authentication';
+import { addSchool } from '../api/Admin';
+import { fetchSchools } from '../api/Data';
 
-import "./Admin.css";
-
-//TODO:
-//  - add admin
-//  - add school
-//  - add class
-//  - equate assessments
+import "./Shared.css";
 
 //consider making a quick column that lists schools and courses
 enum AdminModals {
@@ -24,39 +19,28 @@ interface AdminProps {
 }
 
 
-const [schools, setSchools] = createSignal([]);
-async function getSchools() {
-  try {
-    const response = await (standardPost(Routes.Server + Routes.Data + Routes.Schools,
-      { userid: userid(), password: password() }));
-    if (response.ok) {
-      const json = await response.json();
-      setSchools(json.schools);
-    } 
-  } catch (error) { console.log(error); }
-}
-
 export default function Admin( props: AdminProps ) {
+  const [schools, setSchools] = createSignal([]);
   //const [classes, setClasses] = createSignal();
 
   return (
     <>
-      <div class="admin">
-        <div class="admin-column">
-          <div class="admin-element" onclick={() => {setActiveModal(AdminModals.ADD_SCHOOL);}}>Add School</div>
-          <div class="admin-element">Add Class</div>
-          <div class="admin-element">Promote to Admin</div>
-          <div class="admin-element" onclick={() => {getSchools()}}>Refresh</div>
-          <div class="admin-element" onclick={() => {props.setAccessAdmin(false)}}>Back</div>
+      <div class="page" style="grid-template-columns: 1fr 1fr 1fr;">
+        <div class="column sidebar">
+          <div class="column-element sidebar-element" onclick={() => {setActiveModal(AdminModals.ADD_SCHOOL);}}>Add School</div>
+          <div class="column-element sidebar-element">Add Class</div>
+          <div class="column-element sidebar-element">Promote to Admin</div>
+          <div class="column-element sidebar-element" onclick={() => {}}>Refresh</div>
+          <div class="column-element sidebar-element" onclick={() => {props.setAccessAdmin(false)}}>Back</div>
         </div>
-        <div class="admin-column">
+        <div class="column list">
           <For each={schools()}>
             {(school) => (
-              <div class="admin-element">{school.SchoolName}</div>
+              <div class="column-element list-element">{school.SchoolName}</div>
             )}
           </For>
         </div>
-        <div class="admin-column">
+        <div class="column list">
         </div>
       </div>
       <Modal title={"Add School"} modalType={AdminModals.ADD_SCHOOL}>
@@ -67,16 +51,6 @@ export default function Admin( props: AdminProps ) {
           <input type="text" id="schoolabbreviation" name="schoolabbreviation" />
           <input type="button" value="Add" onclick={async () => {
             const form = document.getElementById(ADD_SCHOOL_FORM) as HTMLFormElement;
-            if (form != null) {
-              try {
-                const response = await (standardPost(Routes.Server + Routes.Admin + Routes.AddSchool, 
-                  { userid: userid(), password: password(), schoolname: form.schoolname.value, schoolabbreviation: form.schoolabbreviation.value} ));
-                if (response.ok) {
-                  const json = await response.json();
-                  setActiveModal(NO_MODAL);
-                } 
-              } catch (error) { console.log(error); }
-            }
           }}/>
         </form>
       </Modal>

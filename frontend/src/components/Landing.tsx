@@ -1,8 +1,8 @@
-// Home.tsx
 import { createSignal, Show } from "solid-js";
-import {Modal, setActiveModal, NO_MODAL} from "./Modal";
-import { Routes, standardPost } from "./Routes";
-import { setUserid, setPassword, setIsAdmin, NULL_ID } from "./Authentication";
+import { Modal, setActiveModal } from "./Modal";
+import { userID, setPassword } from "../api/Authentication";
+import { login, register } from "../api/User";
+import { CONSTANTS } from "../api/Constants";
 
 import "./Landing.css";
 
@@ -17,9 +17,6 @@ const REGISTRATION_FORM = "registration-form";
 
 export default function Landing( ) {
   const [failedLogin, setFailedLogin] = createSignal(false);
-
-  //cant get this.form to work for some reason, so will just do this. too bad
-  //perhaps just inline all of this stuff??
 
   return (
     <div class="landing">
@@ -38,21 +35,11 @@ export default function Landing( ) {
           <input type="button" onclick={async () => {
             const form = document.getElementById(LOGIN_FORM) as HTMLFormElement;
             if (form != null) {
-              try {
-                const response = await (standardPost(Routes.Server + Routes.User + Routes.Login, 
-                  { userHandle: form.userHandle.value, password: form.password.value } ));
-                if (response.ok) {
-                  const json = await response.json();
-                  if (json.userid != null && json.userid != NULL_ID) {
-                    setUserid(json.userid);
-                    setPassword(form.password.value);
-                    setIsAdmin(json.admin);
-                    return;
-                  }  
-                } 
-              } catch (error) { console.log(error);}
+              await login(form.userHandle.value, form.password.value);
             }
-            setFailedLogin(true);
+            if (userID() == CONSTANTS.null_id) {
+              setFailedLogin(true);
+            }
           }} value="Sign-in"/>
         </form>
       </Modal>
@@ -72,18 +59,9 @@ export default function Landing( ) {
           <input type="button" onclick={async () => {
             const form = document.getElementById(REGISTRATION_FORM) as HTMLFormElement;
             if (form != null) {
-              try {
-                const response = await (standardPost(Routes.Server + Routes.User + Routes.Register, 
-                  { username: form.username.value, password: form.password.value, email: form.email.value, school: form.school.value} ));
-                if (response.ok) {
-                  const json = await response.json();
-                  if (json.userid != null) {
-                    setUserid(json.userid);
-                    setPassword(form.password.value);
-                    return;
-                  }  
-                } 
-              } catch (error) { console.log(error); }
+              await register(form.username.value, form.password.value, form.email.value, form.school.value);
+            }
+            if (userID() == CONSTANTS.null_id) {
               setFailedLogin(true);
             }
           }} value="Register"/>

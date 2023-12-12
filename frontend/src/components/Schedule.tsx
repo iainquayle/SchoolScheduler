@@ -1,10 +1,12 @@
 import { createSignal, For, Show, Setter } from 'solid-js'
 import { Modal, setActiveModal, NO_MODAL } from "./Modal";
 import { SlotData, SlotElement } from './Slot';
-
-import { setUserid, setPassword, isAdmin, NULL_ID } from "./Authentication";
+import { setUserID, setPassword, isAdmin } from "../api/Authentication";
+import { CONSTANTS } from "../api/Constants";
 
 import "./Schedule.css";
+import "./Shared.css";
+
 interface ScheduleProps {
   setAdminPage: Setter<boolean>
 }
@@ -21,19 +23,19 @@ export default function Schedule( props: ScheduleProps ) {
           //TODO: make bunch of modal components, will be chaos otherwise
   return (
     <>
-      <div class="schedule">
-        <div class="schedule-column schedule-sidebar">
+      <div class="page" style="grid-template-columns: 1fr 2fr;">
+        <div class="column sidebar">
           <Show when={isAdmin()}>
-            <div class="schedule-sidebar-element" onclick={() => {setActiveModal(NO_MODAL); props.setAdminPage(true);}}>Access Admin Tools</div>
+            <div class="column-element sidebar-element" onclick={() => {setActiveModal(NO_MODAL); props.setAdminPage(true);}}>Access Admin Tools</div>
           </Show>
-          <div class="schedule-sidebar-element">Add Assessment</div>
-          <div class="schedule-sidebar-element">Add Class</div>
-          <div class="schedule-sidebar-element">Add Reserved Slot</div>
-          <div class="schedule-sidebar-element">Edit Classes</div>
-          <div class="schedule-sidebar-element">Change Institution</div>
-          <div class="schedule-sidebar-element" onclick={() => {setActiveModal(NO_MODAL); setPassword(""); setUserid(NULL_ID)}} >Logout</div>
+          <div class="column-element sidebar-element">Add Assessment</div>
+          <div class="column-element sidebar-element">Add Class</div>
+          <div class="column-element sidebar-element">Add Reserved Slot</div>
+          <div class="column-element sidebar-element">Edit Classes</div>
+          <div class="column-element sidebar-element">Change Institution</div>
+          <div class="column-element sidebar-element" onclick={() => {setActiveModal(NO_MODAL); setPassword(""); setUserID(CONSTANTS.null_id)}} >Logout</div>
         </div>
-        <div class="schedule-column schedule-list">
+        <div class="column list">
           <For each={schedule()}>
             {(slot) => <SlotElement data={slot} />}
           </For>
