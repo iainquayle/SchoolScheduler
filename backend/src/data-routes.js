@@ -2,26 +2,62 @@ const express = require('express');
 const router = express.Router();
 const db = require('./sql-db');
 
-const {validateSafeInput, validateUser } = require('./validation');
+const {validateInput, validateUser } = require('./validation');
 
 
-//TODO: make this take in search parameters
+
+router.post('/search_classes', (req, res) => {
+  const { token, body } = req.body;
+  if (!validateUser(token) || !validateInput([body.SchoolID, body.FacultyCode, body.CourseCode, body.CourseName, body.ClassTime, body.ClassLocation,
+    body.ClassDays])) {
+    return res.status(400).json({ error: 'Invalid input data' });
+  } else {
+    db.query(
+      `SELECT * FROM Classes WHERE SchoolID = ? 
+        AND FacultyCode LIKE ? 
+        AND CourseCode LIKE ? 
+        AND CourseName LIKE ?`,
+      [body.SchoolID, body.FacultyCode + '%', body.CourseCode + '%', body.CourseName + '%'],
+      (err, result) => {
+        if (err) {
+          console.error('Error searching classes:', err);
+          return res.status(500).json({ error: 'Internal Server Error' });
+        }
+        console.log('Classes retrieved: ' + result.length);
+
+        res.json({classes: result});
+      });
+  }
+});
+
 router.post('/schools', (req, res) => {
   const {token, body} = req.body;
   if (!validateUser(token)) {
     return res.status(400).json({ error: 'Invalid input data' });
-  }
-
-  db.query(
-    `SELECT * FROM Schools`,
-    (err, result) => {
-      if (err) {
-        console.error('Error getting schools:', err);
-        return res.status(500).json({ error: 'Internal Server Error' });
-      }
-      res.json({schools: result});
+  } else {
+    if (body.SchoolID === -1) {
+      db.query(
+        `SELECT * FROM Schools`,
+        (err, result) => {
+          if (err) {
+            console.error('Error getting schools:', err);
+            return res.status(500).json({ error: 'Internal Server Error' });
+          }
+          res.json({schools: result});
+      });
+    } else {
+      db.query(
+        `SELECT * FROM Schools WHERE SchoolID = ?`,
+        [body.SchoolID],
+        (err, result) => {
+          if (err) {
+            console.error('Error getting schools:', err);
+            return res.status(500).json({ error: 'Internal Server Error' });
+          }
+          res.json({schools: result});
+      });
     }
-  );
+  }
 });
 
 router.post('/courses', (req, res) => {

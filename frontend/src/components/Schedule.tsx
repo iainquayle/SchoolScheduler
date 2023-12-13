@@ -1,9 +1,10 @@
 import { createSignal, For, Show, Setter } from 'solid-js'
 import { Modal, setActiveModal, NO_MODAL } from "./Modal";
 import { SlotData, SlotElement } from './Slot';
-import { setUserID, setPassword, isAdmin } from "../api/Authentication";
+import { setUserID, setPassword, isAdmin, schoolID } from "../api/Authentication";
 import { CONSTANTS } from "../api/Constants";
-import { followSchool, addTodo, fetchTodos, toggleTodo } from '../api/User';
+import { followSchool, addTodo, fetchTodos, toggleTodo, deleteTodo } from '../api/User';
+import { fetchSchools } from '../api/Data';
 
 import "./Schedule.css";
 import "./Shared.css";
@@ -24,10 +25,19 @@ interface ScheduleProps {
 }
 
 export default function Schedule( props: ScheduleProps ) {
-  //this will be needed for reactivity
   const [todos, setTodos] = createSignal<any[]>([]);
+  const [classes, setClasses] = createSignal<any[]>([
+    {ClassID: 1, SchoolID: 1, FacultyCode: 'CS', CourseCode: 471, ClassName: 'database management', ClassDescription: 'squeal', ClassDays: 'MWF', ClassTime: '10:00', ClassLocation: 'st431'},
+    {ClassID: 2, SchoolID: 1, FacultyCode: 'CS', CourseCode: 457, ClassName: 'OS fundamentals', ClassDescription: 'not bad actually', ClassDays: 'MWF', ClassTime: '11:00', ClassLocation: 'st430'},
+    {ClassID: 3, SchoolID: 1, FacultyCode: 'CS', CourseCode: 433, ClassName: 'intro to ai', ClassDescription: 'search with jorg', ClassDays: 'TTh', ClassTime: '12:00', ClassLocation: 'st400'},
+    {ClassID: 4, SchoolID: 1, FacultyCode: 'SE', CourseCode: 300, ClassName: 'intro to seng', ClassDescription: 'too much java', ClassDays: 'MW', ClassTime: '13:00', ClassLocation: 'st431'},
+  ]);
+  const [school, setSchool] = createSignal<any>([{SchoolName: "None"}]);
+  setClasses([]);
 
-          //TODO: make bunch of modal components, will be chaos otherwise
+  fetchTodos(setTodos);
+  fetchSchools(setSchool);
+
   return (
     <>
       <div class="page" style="grid-template-columns: 1fr 2fr 2fr;">
@@ -35,30 +45,80 @@ export default function Schedule( props: ScheduleProps ) {
           <Show when={isAdmin()}>
             <div class="column-element sidebar-element" onclick={() => {setActiveModal(NO_MODAL); props.setAdminPage(true);}}>Access Admin Tools</div>
           </Show>
-          <div class="column-element sidebar-element">Add Assessment</div>
-          <div class="column-element sidebar-element">Add Class</div>
-          <div class="column-element sidebar-element" onclick={() => {setActiveModal(ScheduleModal.ADD_TODO)}}>Add TODO</div>
-          <div class="column-element sidebar-element">Edit Classes</div>
-          <div class="column-element sidebar-element" onclick={() => {setActiveModal(ScheduleModal.CHANGE_INSTITUTION)}}>Change Institution</div>
-          <div class="column-element sidebar-element" onclick={() => {fetchTodos(setTodos); console.log(todos().length)}}>Refresh</div>
+          <div class="column-element sidebar-element" onclick={() => {setActiveModal(ScheduleModal.ADD_TODO)}}>Add Task</div>
+          <div class="column-element sidebar-element" onclick={() => {setActiveModal(ScheduleModal.ADD_CLASS)}}>Add Class</div>
+          <div class="column-element sidebar-element" onclick={() => {setActiveModal(ScheduleModal.CHANGE_INSTITUTION)}}>
+            School: { school()[0].SchoolName }
+          </div>
+          <div class="column-element sidebar-element" onclick={() => {fetchTodos(setTodos); fetchSchools(setSchool, schoolID())}}>Refresh</div>
           <div class="column-element sidebar-element" onclick={() => {setActiveModal(NO_MODAL); setPassword(""); setUserID(CONSTANTS.null_id)}} >Logout</div>
         </div>
         <div class="column list">
           <For each={todos()}>
             {(todo) => (
-              <div class="column-element list-element" style="display: grid; grid-template-columns: 3fr 3fr 1fr;">
-                <div class="list-element-title">{todo.TodoName}</div>
-                <div class="list-element-due-date">{todo.TodoDueDate}</div>
-                <input type="checkbox" checked={todo.TodoCompleted} onclick={async () => {
-                  await toggleTodo(todo.TodoID);
-                }}/>
+              <div class="column-element list-element" style="display: grid; grid-template-columns: 3fr 1fr 1fr;" onclick={() => {
+                setActiveModal(ScheduleModal.TODO + todo.TodoID);
+              }}>
+                <div style="pointer-event: none;">{todo.TodoName}</div>
+                <div style="pointer-event: none;">{todo.TodoDueDate.split('T')[0]}</div>
+                <div style="pointer-event: none;">{todo.TodoCompleted ? "Done" : "Not Done"}</div>
+                <Modal title={todo.TodoName} modalType={ScheduleModal.TODO + todo.TodoID}>
+                  <div>{todo.TodoDescription}</div>
+                  <div>Due: {todo.TodoDueDate.split('T')[0]}</div>
+                  <input type="checkbox" checked={todo.TodoCompleted} onclick={async () => {
+                    await toggleTodo(todo.TodoID);
+                    fetchTodos(setTodos);
+                  }}/>
+                  <div onclick={
+                    async () => {
+                      await deleteTodo(todo.TodoID);
+                      fetchTodos(setTodos);
+                      setActiveModal(NO_MODAL);
+                    }
+                  }> Delete </div>
+                </Modal>
               </div>
             )}
           </For>
         </div>
         <div class="column list">
+          <For each={classes()}>
+            {(userClass) => (
+              <div class="column-element list-element" style="display: grid; grid-template-columns: 1fr 1fr 4fr 1fr 1fr;" onclick={() => {
+                setActiveModal(ScheduleModal.EDIT_CLASSES + userClass.ClassID);
+              }}>
+                <div style="pointer-event: none;">{userClass.FacultyCode}</div>
+                <div style="pointer-event: none;">{userClass.CourseCode}</div>
+                <div style="pointer-event: none;">{userClass.ClassName}</div>
+                <div style="pointer-event: none;">{userClass.ClassDays}</div>
+                <div style="pointer-event: none;">{userClass.ClassTime}</div>
+                <Modal title={userClass.ClassName} modalType={ScheduleModal.EDIT_CLASSES + userClass.ClassID}>
+                  <div>{userClass.FacultyCode + " " + userClass.CourseCode}</div>
+                  <div>{userClass.ClassDescription}</div>
+                  <div>{userClass.ClassLocation}</div>
+                  <form>
+                    <label for="assessmentName">Assessment Name</label>
+                    <input type="text" name="assessmentName"/>
+                    <label for="assessmentDate">Assessment Date</label>
+                    <input type="date" name="assessmentDate"/>
+                    <label for="assessmentWeight">Assessment Weight</label>
+                    <input type="number" name="assessmentWeight"/>
+                    <input type="button" onclick={ async () => {
+                      setActiveModal(NO_MODAL);
+                    }}
+                   value="Add Task"/>
+                  </form>
+                  <div onclick={
+                    async () => {
+                      setActiveModal(NO_MODAL);
+                    }
+                  }> Delete </div>
+                </Modal>
+              </div>
+            )}
+          </For>
         </div>
-        <Modal title="Add TODO" modalType={ScheduleModal.ADD_TODO}>
+        <Modal title="Add Task" modalType={ScheduleModal.ADD_TODO}>
           <form id={TODO_FORM}>
             <label for="todo">Title</label>
             <input type="text" name="todo"/>
@@ -70,6 +130,7 @@ export default function Schedule( props: ScheduleProps ) {
               const form = document.getElementById(TODO_FORM) as HTMLFormElement;
               console.log(form.dueDate.value);
               await addTodo( form.todo.value, new Date(form.dueDate.value), form.description.value);
+              await fetchTodos(setTodos);
               setActiveModal(NO_MODAL);
             }} value="Submit"/>
           </form>
@@ -81,6 +142,7 @@ export default function Schedule( props: ScheduleProps ) {
             <input type="button" onclick={ async () => {
               const form = document.getElementById(INSTITUTION_FORM) as HTMLFormElement;
               await followSchool(form.school.value);
+              await fetchSchools(setSchool, schoolID());
               setActiveModal(NO_MODAL);
             }} value="Submit"/>
           </form>

@@ -54,7 +54,7 @@ export default function Landing( ) {
           <input type="password" name="password" />
           <label for="email">Email</label>
           <input type="email" name="email"/> 
-          <label for="school">School(not used yet)</label>
+          <label for="school">School</label>
           <input type="text" name="school"/> 
           <input type="button" onclick={async () => {
             const form = document.getElementById(REGISTRATION_FORM) as HTMLFormElement;

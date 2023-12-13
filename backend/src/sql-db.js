@@ -35,42 +35,36 @@ function configure(db) {
       SchoolAbbreviation VARCHAR(45) NOT NULL,
       PRIMARY KEY (SchoolID))`,
 
-    `CREATE TABLE IF NOT EXISTS Courses (
-      CourseID INT NOT NULL AUTO_INCREMENT,
-      CourseName VARCHAR(45) NOT NULL,
-      SchoolID INT NOT NULL,
+    `CREATE TABLE IF NOT EXISTS Classes (
+      ClassID INT NOT NULL AUTO_INCREMENT,
+      SchoolID INT NOT NULL,      
       FacultyCode VARCHAR(45) NOT NULL,
-      CourseCode VARCHAR(45) NOT NULL,
-      PRIMARY KEY (CourseID),
+      CourseCode INT NOT NULL,
+      ClassTime VARCHAR(45) NOT NULL,
+      ClassDays VARCHAR(45) NOT NULL,
+      ClassLocation VARCHAR(255) NOT NULL,
+      ClassDescription VARCHAR(255) NOT NULL,
+      ClassInstructor VARCHAR(45) NOT NULL,
+      PRIMARY KEY (ClassID),
       FOREIGN KEY (SchoolID) REFERENCES Schools(SchoolID))`,
-
-    `CREATE TABLE IF NOT EXISTS Sections (
-      SectionID INT NOT NULL AUTO_INCREMENT,
-      SectionName VARCHAR(45) NOT NULL,
-      SectionCode VARCHAR(45) NOT NULL,
-      CourseID INT NOT NULL,
-      PRIMARY KEY (SectionID),
-      FOREIGN KEY (CourseID) REFERENCES Courses(CourseID))`,
 
     `CREATE TABLE IF NOT EXISTS Assessments (
       AssessmentID INT NOT NULL AUTO_INCREMENT,
       AssessmentName VARCHAR(45) NOT NULL,
       AssessmentWeight INT NOT NULL,
       AssessmentDueDate DATE NOT NULL,
-      SectionID INT NOT NULL,
-      PRIMARY KEY (AssessmentID),
-      FOREIGN KEY (SectionID) REFERENCES Sections(SectionID))`,
+      PRIMARY KEY (AssessmentID))`,
     
     `CREATE TABLE IF NOT EXISTS UserAssessments (
       UserID INT NOT NULL,
       AssessmentID INT NOT NULL,
       PRIMARY KEY (UserID, AssessmentID))`,
 
-    `CREATE TABLE IF NOT EXISTS UserSections (
+    `CREATE TABLE IF NOT EXISTS Classes (
       UserID INT NOT NULL,
-      SectionID INT NOT NULL,
-      PRIMARY KEY (UserID, SectionID))`,
-
+      ClassID INT NOT NULL,
+      PRIMARY KEY (UserID, ClassID))`,
+//maybe assessments and todos are simply merged, just have an optional courseID and gradeweight
     `CREATE TABLE IF NOT EXISTS UserTodos (
       TodoID INT NOT NULL AUTO_INCREMENT,
       UserID INT NOT NULL,
