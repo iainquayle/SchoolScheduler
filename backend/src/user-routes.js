@@ -8,6 +8,27 @@ const NULL_ID = -1;
 
 
 
+router.post('/add_class', (req, res) => {
+  const { token, body } = req.body;
+  if (!validateUser(token) || !validateInput([body.SchoolID, body.FacultyCode, body.CourseCode, body.CourseName, body.ClassTime, body.ClassLocation,
+    body.ClassDays])) {
+    return res.status(400).json({ error: 'Invalid input data' });
+  } else {
+    db.query(
+      `INSERT INTO Classes (ClassTime, ClassLocation) 
+        VALUES (?, ?, ?)`,
+      [body. body.ClassLocation],
+      (insertErr, insertResult) => {
+        if (insertErr) {
+          console.error('Error adding class:', insertErr);
+          return res.status(500).json({ error: 'Internal Server Error' });
+        }
+        console.log('Class added');
+        res.json({ classid: insertResult.insertId });
+    });
+  }
+});
+
 router.post('/todos', (req, res) => {
   const { token } = req.body;
   if (!validateUser(token)) {
@@ -48,6 +69,25 @@ router.post('/add_todo', (req, res) => {
   }
 });
 
+router.post('/delete_todo', (req, res) => {
+  const { token, body } = req.body;
+  if (!validateUser(token) || !validateInput(body.TodoID)) {
+    return res.status(400).json({ error: 'Invalid input data' });
+  } else {
+    db.query(
+      `DELETE FROM UserTodos WHERE TodoID = ? AND UserID = ?`,
+      [body.TodoID, token.UserID],
+      (insertErr, insertResult) => {
+        if (insertErr) {
+          console.error('Error deleting todo:', insertErr);
+          return res.status(500).json({ error: 'Internal Server Error' });
+        }
+        console.log('Todo deleted');
+        res.json({ message: 'Todo deleted' });
+    });
+  }
+});
+
 router.post('/toggle_todo', (req, res) => {
   const { token, body } = req.body;
   if (!validateUser(token) || !validateInput(body.TodoID)) {
@@ -65,38 +105,6 @@ router.post('/toggle_todo', (req, res) => {
         res.json({ message: 'Todo toggled' });
     });
   }
-});
-
-router.post('/add_assessment', (req, res) => {
-  const { token, body } = req.body;
-  if (!validateUser(token) 
-      || !validateInput(body.AssessmentName) 
-      || !validateInput(body.AssessmentWeight) 
-      || !validateInput(body.AssessmentDueDate) 
-      || !validateInput(body.SectionID)) {
-    return res.status(400).json({ error: 'Invalid input data' });
-  }
-
-  db.query(
-    `INSERT INTO Assessments (AssessmentName, AssessmentWeight, AssessmentDueDate, SectionID) 
-      VALUES (?, ?, ?, ?)`,
-    [body.AssessmentName, body.AssessmentWeight, body.AssessmentDueDate, body.SectionID],
-    (insertErr, insertResult) => {
-      if (insertErr) {
-        console.error('Error adding assessment:', insertErr);
-        return res.status(500).json({ error: 'Internal Server Error' });
-      }
-      console.log('Assessment added');
-      res.json({ assessmentid: insertResult.insertId });
-    });
-});
-
-router.post('/assessments', (req, res) => {
-
-});
-
-router.post('/courses', (req, res) => {
-  
 });
 
 router.post('/login', (req, res) => {

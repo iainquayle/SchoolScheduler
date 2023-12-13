@@ -4,27 +4,29 @@ const db = require('./sql-db');
 const {validateInput, validateAdmin, ADMIN} = require('./validation');
 
 
+router.post('/add_course', (req, res) => {
+
+});
+
+
 router.post('/add_school', (req, res) => {
   const { token, body } = req.body;
   if (!validateAdmin(token) || !validateInput(body.SchoolName)) {
     return res.status(400).json({ error: 'Invalid input data' });
-  }
-
-  db.query(
-    `INSERT INTO Schools (SchoolName, SchoolAbbreviation) 
-      VALUES (?, ?)`,
-    [body.SchoolName, body.SchoolAbbreviation],
-    (insertErr, insertResult) => {
-      if (insertErr) {
-        console.error('Error adding school:', insertErr);
-        return res.status(500).json({ error: 'Internal Server Error' });
-      }
-      console.log('School added');
-      res.json({ schoolid: insertResult.insertId });
+  } else {
+    db.query(
+      `INSERT INTO Schools (SchoolName, SchoolAbbreviation) 
+        VALUES (?, ?)`,
+      [body.SchoolName, body.SchoolAbbreviation],
+      (insertErr, insertResult) => {
+        if (insertErr) {
+          console.error('Error adding school:', insertErr);
+          return res.status(500).json({ error: 'Internal Server Error' });
+        }
+        console.log('School added');
+        res.json({ schoolid: insertResult.insertId });
     });
-});
-
-router.post('/add_course', (req, res) => {
+  }
 });
 
 router.post('/promote_user', (req, res) => {

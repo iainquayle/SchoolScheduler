@@ -16,5 +16,6 @@ export const CONSTANTS = {
     todos: "/todos",
     addTodo: "/add_todo",
     toggleTodo: "/toggle_todo",
+    deleteTodo: "/delete_todo",
   }
 }

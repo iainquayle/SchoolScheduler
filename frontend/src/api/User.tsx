@@ -1,7 +1,7 @@
 import {Setter} from "solid-js"
 import {postToServer, postWithToken} from "./Util";
 import {CONSTANTS} from "./Constants";
-import {setUserID, setPassword, setIsAdmin} from "./Authentication";
+import {setUserID, setPassword, setIsAdmin, setSchoolID } from "./Authentication";
 
 export async function fetchTodos(setTodos: Setter<any[]>) {
   try {
@@ -18,6 +18,16 @@ export async function addTodo(name: string, dueDate: Date, description: string) 
   try {
     const response = await (postWithToken(CONSTANTS.routes.user + CONSTANTS.routes.addTodo,
       { TodoName: name, TodoDueDate: dueDate.toISOString().split('T')[0], TodoDescription: description} ));
+    if (response.ok) {
+      //const json = await response.json();
+    } 
+  } catch (error) { console.log(error); }
+}
+
+export async function deleteTodo(todoID: number) {
+  try {
+    const response = await (postWithToken(CONSTANTS.routes.user + CONSTANTS.routes.deleteTodo,
+      { TodoID: todoID} ));
     if (response.ok) {
       //const json = await response.json();
     } 
@@ -44,6 +54,7 @@ export async function login(userHandle: string, password: string ) {
         setUserID(json.UserID);
         setPassword(password);
         setIsAdmin(json.Admin);
+        setSchoolID(json.SchoolID);
         return;
       }  
     } 
@@ -55,7 +66,11 @@ export async function followSchool(schoolName: string) {
     const response = await (postWithToken(CONSTANTS.routes.user + CONSTANTS.routes.followSchool, 
       { SchoolName: schoolName } ));
     if (response.ok) {
-      //const json = await response.json();
+      const json = await response.json();
+      if(json.SchoolID != null && json.SchoolID != CONSTANTS.null_id) {
+        setSchoolID(json.SchoolID);
+        return;
+      }
     } 
   } catch (error) { console.log(error);}
 }
@@ -66,9 +81,10 @@ export async function register(username: string, password: string, email: string
       { Username: username, Password: password, Email: email, SchoolName: school} ));
     if (response.ok) {
       const json = await response.json();
-      if (json.UserID != null) {
+      if (json.UserID != null && json.UserID != CONSTANTS.null_id) {
         setUserID(json.UserID);
         setPassword(password);
+        setSchoolID(json.SchoolID);
         return;
       }  
     } 
