@@ -38,8 +38,11 @@ function configure(db) {
     `CREATE TABLE IF NOT EXISTS Courses (
       CourseID INT NOT NULL AUTO_INCREMENT,
       CourseName VARCHAR(45) NOT NULL,
+      SchoolID INT NOT NULL,
+      FacultyCode VARCHAR(45) NOT NULL,
       CourseCode VARCHAR(45) NOT NULL,
-      PRIMARY KEY (CourseID))`,
+      PRIMARY KEY (CourseID),
+      FOREIGN KEY (SchoolID) REFERENCES Schools(SchoolID))`,
 
     `CREATE TABLE IF NOT EXISTS Sections (
       SectionID INT NOT NULL AUTO_INCREMENT,
@@ -48,6 +51,34 @@ function configure(db) {
       CourseID INT NOT NULL,
       PRIMARY KEY (SectionID),
       FOREIGN KEY (CourseID) REFERENCES Courses(CourseID))`,
+
+    `CREATE TABLE IF NOT EXISTS Assessments (
+      AssessmentID INT NOT NULL AUTO_INCREMENT,
+      AssessmentName VARCHAR(45) NOT NULL,
+      AssessmentWeight INT NOT NULL,
+      AssessmentDueDate DATE NOT NULL,
+      SectionID INT NOT NULL,
+      PRIMARY KEY (AssessmentID),
+      FOREIGN KEY (SectionID) REFERENCES Sections(SectionID))`,
+    
+    `CREATE TABLE IF NOT EXISTS UserAssessments (
+      UserID INT NOT NULL,
+      AssessmentID INT NOT NULL,
+      PRIMARY KEY (UserID, AssessmentID))`,
+
+    `CREATE TABLE IF NOT EXISTS UserSections (
+      UserID INT NOT NULL,
+      SectionID INT NOT NULL,
+      PRIMARY KEY (UserID, SectionID))`,
+
+    `CREATE TABLE IF NOT EXISTS UserTodos (
+      TodoID INT NOT NULL AUTO_INCREMENT,
+      UserID INT NOT NULL,
+      TodoName VARCHAR(45) NOT NULL,
+      TodoDueDate DATE NOT NULL,
+      TodoDescription VARCHAR(255) NOT NULL,
+      TodoCompleted TINYINT(1) NOT NULL DEFAULT 0,
+      PRIMARY KEY (TodoID))`,
   ]
   for (let i = 0; i < table_creation_queries.length; i++) {
     db.query(table_creation_queries[i], (err, result) => {

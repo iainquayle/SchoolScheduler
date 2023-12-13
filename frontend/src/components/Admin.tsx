@@ -28,7 +28,7 @@ export default function Admin( props: AdminProps ) {
 
   return (
     <>
-      <div class="page" style="grid-template-columns: 1fr 1fr 1fr;">
+      <div class="page" style="grid-template-columns: 1fr 2fr 2fr;">
         <div class="column sidebar">
           <div class="column-element sidebar-element" onclick={() => {setActiveModal(AdminModals.ADD_SCHOOL);}}>Add School</div>
           <div class="column-element sidebar-element">Add Class</div>

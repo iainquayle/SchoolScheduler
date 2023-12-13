@@ -6,33 +6,126 @@ const { validateUser } = require("./validation");
 
 const NULL_ID = -1;
 
+
+
+router.post('/todos', (req, res) => {
+  const { token } = req.body;
+  if (!validateUser(token)) {
+    return res.status(400).json({ error: 'Invalid input data' });
+  } else {
+    db.query(
+      `SELECT * FROM UserTodos WHERE UserID = ?`,
+      [token.UserID],
+      (err, result) => {
+        if (err) {
+          console.error('Error retrieving todos:', err);
+          return res.status(500).json({ error: 'Internal Server Error' });
+        }
+        console.log('Todos retrieved: ' + result.length);
+
+        res.json({todos: result});
+      });
+  }
+});
+
+router.post('/add_todo', (req, res) => {
+  const { token, body } = req.body;
+  if (!validateUser(token) || !validateInput(body.TodoName) || !validateInput(body.TodoDueDate || !validateInput(body.TodoDescription))) {
+    return res.status(400).json({ error: 'Invalid input data' });
+  } else {
+    db.query(
+      `INSERT INTO UserTodos (UserID, TodoName, TodoDueDate, TodoDescription) 
+        VALUES (?, ?, ?, ?)`,
+      [token.UserID, body.TodoName, body.TodoDueDate, body.TodoDescription],
+      (insertErr, insertResult) => {
+        if (insertErr) {
+          console.error('Error adding todo:', insertErr);
+          return res.status(500).json({ error: 'Internal Server Error' });
+        }
+        console.log('Todo added');
+        res.json({ todoid: insertResult.insertId });
+    });
+  }
+});
+
+router.post('/toggle_todo', (req, res) => {
+  const { token, body } = req.body;
+  if (!validateUser(token) || !validateInput(body.TodoID)) {
+    return res.status(400).json({ error: 'Invalid input data' });
+  } else {
+    db.query(
+      `UPDATE UserTodos SET TodoCompleted = NOT TodoCompleted WHERE TodoID = ? AND UserID = ?`,
+      [body.TodoID , token.UserID],
+      (insertErr, insertResult) => {
+        if (insertErr) {
+          console.error('Error toggling todo:', insertErr);
+          return res.status(500).json({ error: 'Internal Server Error' });
+        }
+        console.log('Todo toggled');
+        res.json({ message: 'Todo toggled' });
+    });
+  }
+});
+
+router.post('/add_assessment', (req, res) => {
+  const { token, body } = req.body;
+  if (!validateUser(token) 
+      || !validateInput(body.AssessmentName) 
+      || !validateInput(body.AssessmentWeight) 
+      || !validateInput(body.AssessmentDueDate) 
+      || !validateInput(body.SectionID)) {
+    return res.status(400).json({ error: 'Invalid input data' });
+  }
+
+  db.query(
+    `INSERT INTO Assessments (AssessmentName, AssessmentWeight, AssessmentDueDate, SectionID) 
+      VALUES (?, ?, ?, ?)`,
+    [body.AssessmentName, body.AssessmentWeight, body.AssessmentDueDate, body.SectionID],
+    (insertErr, insertResult) => {
+      if (insertErr) {
+        console.error('Error adding assessment:', insertErr);
+        return res.status(500).json({ error: 'Internal Server Error' });
+      }
+      console.log('Assessment added');
+      res.json({ assessmentid: insertResult.insertId });
+    });
+});
+
+router.post('/assessments', (req, res) => {
+
+});
+
+router.post('/courses', (req, res) => {
+  
+});
+
 router.post('/login', (req, res) => {
   console.log("login called")
   const { UserHandle, Password } = req.body;
   if ((!UserHandle || !Password) || !validateInput(Password) || !(validateInput(UserHandle) || validateEmailPattern(UserHandle))) {
     return res.status(400).json({ error: 'Invalid input data' });
-  }
-
-  let loginQuery = '';
-  if (UserHandle.includes('@')) {
-    loginQuery = 'SELECT UserID, Admin FROM Users WHERE Email = ? AND Password = ?';
   } else {
-    loginQuery = 'SELECT UserID, Admin FROM Users WHERE Username = ? AND Password = ?';
-  }
-
-  db.query(loginQuery, [UserHandle, Password], (err, result) => {
-    if (err) {
-      console.error('Error during login:', err);
-      return res.status(500).json({ error: 'Internal Server Error' });
-    }
-    if (result.length > 0) {
-      console.log('Login successful');
-      res.json(result[0]);
+    let loginQuery = '';
+    if (UserHandle.includes('@')) {
+      loginQuery = 'SELECT UserID, Admin FROM Users WHERE Email = ? AND Password = ?';
     } else {
-      console.log('Invalid credentials');
-      res.json({ UserID: NULL_ID });
+      loginQuery = 'SELECT UserID, Admin FROM Users WHERE Username = ? AND Password = ?';
     }
-  });
+
+    db.query(loginQuery, [UserHandle, Password], (err, result) => {
+      if (err) {
+        console.error('Error during login:', err);
+        return res.status(500).json({ error: 'Internal Server Error' });
+      }
+      if (result.length > 0) {
+        console.log('Login successful');
+        res.json(result[0]);
+      } else {
+        console.log('Invalid credentials');
+        res.json({ UserID: NULL_ID });
+      }
+    });
+  }
 });
 
 
@@ -69,9 +162,10 @@ router.post('/follow_school', (req, res) => {
   const { token, body } = req.body;
   if (!validateUser(token) || !validateInputSpaced(body.SchoolName)) {
     return res.status(400).json({ error: 'Invalid input data' });
+  } else {
+    followSchool(token.UserID, body.SchoolName);
+    res.json({ message: "Success" });
   }
-  followSchool(token.UserID, body.SchoolName);
-  res.json({ message: "Success" });
 });
 
 router.post('/register', (req, res) => {
@@ -80,33 +174,34 @@ router.post('/register', (req, res) => {
 
   if ((!Username || !Password || !Email) || !validateInput([Username, Password]) || !validateEmailPattern(Email) || !validateInputSpaced(SchoolName)) {
     return res.status(400).json({ error: 'Invalid input data' });
+  } else {
+    db.query(
+      `INSERT INTO Users (Username, Password, Email, SchoolID) 
+      VALUES (?, ?, ?, NULL)`,
+      [Username, Password, Email],
+      (insertErr, insertResult) => {
+        if (insertErr) {
+          console.error('Error registering user:', insertErr);
+          return res.status(500).json({ error: 'Internal Server Error' });
+        } else {
+          db.query(
+            `SELECT UserID, Admin FROM Users WHERE Username = ?`,
+            [Username],
+            (err, result) => {
+              if (err) {
+                console.error('Error during login:', err);
+                return res.status(500).json({ error: 'Internal Server Error' });
+              }
+              console.log('User ID retrieved successfully');
+              res.json(result[0]);
+              if (SchoolName !== '') {
+                followSchool(result[0].UserID, SchoolName);
+              }
+          });
+        }
+        console.log('User registered successfully');
+    });
   }
-
-  db.query(
-    `INSERT INTO Users (Username, Password, Email, SchoolID) 
-    VALUES (?, ?, ?, NULL)`,
-    [Username, Password, Email],
-    (insertErr, insertResult) => {
-      if (insertErr) {
-        console.error('Error registering user:', insertErr);
-        return res.status(500).json({ error: 'Internal Server Error' });
-      }
-      console.log('User registered successfully');
-  });
-  db.query(
-    `SELECT UserID, Admin FROM Users WHERE Username = ?`,
-    [Username],
-    (err, result) => {
-      if (err) {
-        console.error('Error during login:', err);
-        return res.status(500).json({ error: 'Internal Server Error' });
-      }
-      console.log('User ID retrieved successfully');
-      res.json(result[0]);
-      if (SchoolName !== '') {
-        followSchool(result[0].UserID, SchoolName);
-      }
-  });
 });
 
 module.exports = router;

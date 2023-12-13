@@ -9,6 +9,7 @@ exports.USER = 0;
 
 exports.validateUser = async (token) => {
   out = false;
+  console.log(token);
   if (!this.validateInput(token.UserID) || !this.validateInput(token.Password)) {
     return out;
   }
@@ -16,6 +17,7 @@ exports.validateUser = async (token) => {
     `SELECT UserID FROM Users WHERE UserID = ? AND Password = ?`,
     [token.UserID, token.Password],
     (err, result) => {
+      console.log(result);
       if (result.length > 0) {
         console.log('User validated');
         out = true;
@@ -36,6 +38,7 @@ exports.validateAdmin = async (token) => {
     [token.UserID, token.Password],
     (err, result) => {
       if (result.length > 0) {
+      console.log(result);
         console.log('Admin validated');
         out = result[0].Admin == 1;
       } else {

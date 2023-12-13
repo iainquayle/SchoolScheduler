@@ -2,7 +2,7 @@ import { createSignal } from "solid-js";
 import { CONSTANTS } from "./Constants";
 
 export function getToken() {
-  return { Userid: userID(), Password: password() };
+  return { UserID: userID(), Password: password() };
 }
 
 export const [userID, setUserID] = createSignal(CONSTANTS.null_id);

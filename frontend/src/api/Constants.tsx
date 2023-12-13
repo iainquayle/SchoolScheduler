@@ -13,5 +13,8 @@ export const CONSTANTS = {
     data: "/data",
     schools: "/schools",
     followSchool: "/follow_school",
+    todos: "/todos",
+    addTodo: "/add_todo",
+    toggleTodo: "/toggle_todo",
   }
 }
