@@ -44,7 +44,6 @@ function configure(db) {
       ClassDays VARCHAR(45) NOT NULL,
       ClassLocation VARCHAR(255) NOT NULL,
       ClassDescription VARCHAR(255) NOT NULL,
-      ClassInstructor VARCHAR(45) NOT NULL,
       PRIMARY KEY (ClassID),
       FOREIGN KEY (SchoolID) REFERENCES Schools(SchoolID))`,
 
@@ -60,7 +59,7 @@ function configure(db) {
       AssessmentID INT NOT NULL,
       PRIMARY KEY (UserID, AssessmentID))`,
 
-    `CREATE TABLE IF NOT EXISTS Classes (
+    `CREATE TABLE IF NOT EXISTS UserClasses (
       UserID INT NOT NULL,
       ClassID INT NOT NULL,
       PRIMARY KEY (UserID, ClassID))`,

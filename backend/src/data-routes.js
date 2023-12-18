@@ -6,7 +6,7 @@ const {validateInput, validateUser } = require('./validation');
 
 
 
-router.post('/search_classes', (req, res) => {
+router.post('/classes', (req, res) => {
   const { token, body } = req.body;
   if (!validateUser(token) || !validateInput([body.SchoolID, body.FacultyCode, body.CourseCode, body.CourseName, body.ClassTime, body.ClassLocation,
     body.ClassDays])) {
