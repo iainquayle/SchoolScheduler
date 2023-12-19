@@ -14,7 +14,7 @@ router.post('/add_class', (req, res) => {
       `INSERT INTO Classes (SchoolID, FacultyCode, CourseCode, ClassTime, ClassDays, ClassLocation, ClassDescription) 
         VALUES (
         (SELECT SchoolID FROM Schools WHERE SchoolName = ?),
-        ?, ?, ?, ?, ?, ?)`,
+        UPPER(?), ?, ?, ?, ?, ?)`,
       [body.SchoolName, body.FacultyCode, body.CourseCode, body.ClassTime, body.ClassDays, body.ClassLocation, body.ClassDescription],
       (insertErr, insertResult) => {
         if (insertErr) {

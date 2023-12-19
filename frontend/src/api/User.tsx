@@ -3,6 +3,27 @@ import {postToServer, postWithToken} from "./Util";
 import {CONSTANTS} from "./Constants";
 import {setUserID, setPassword, setIsAdmin, setSchoolID } from "./Authentication";
 
+export async function fetchClasses(setClasses: Setter<any[]>) {
+  try {
+    const response = await (postWithToken(CONSTANTS.routes.user + CONSTANTS.routes.classes, {}));
+    if (response.ok) {
+      const json = await response.json();
+      const classes = json.classes;
+      setClasses(classes);
+    } 
+  } catch (error) { console.log(error); }
+}
+
+export async function addClass(schoolID: number, facultyCode: string, courseCode: number) {
+  try {
+    const response = await postWithToken(CONSTANTS.routes.user + CONSTANTS.routes.addClass,
+      {SchoolID: schoolID, FacultyCode: facultyCode, CourseCode: courseCode} );
+    if (response.ok) {
+      //const json = await response.json();
+    }
+  } catch (error) { console.log(error); }
+}
+
 export async function fetchTodos(setTodos: Setter<any[]>) {
   try {
     const response = await (postWithToken(CONSTANTS.routes.user + CONSTANTS.routes.todos, {}));

@@ -6,18 +6,14 @@ const { validateUser } = require("./validation");
 
 const NULL_ID = -1;
 
-
-
 router.post('/add_class', (req, res) => {
   const { token, body } = req.body;
-  if (!validateUser(token) || !validateInput([body.SchoolID, body.FacultyCode, body.CourseCode, body.CourseName, body.ClassTime, body.ClassLocation,
-    body.ClassDays])) {
+  if (!validateUser(token) || !validateInput([body.SchoolID, body.FacultyCode, body.CourseCode ])) {
     return res.status(400).json({ error: 'Invalid input data' });
   } else {
     db.query(
-      `INSERT INTO Classes (ClassTime, ClassLocation) 
-        VALUES (?, ?, ?)`,
-      [body. body.ClassLocation],
+      `INSERT INTO UserClasses (UserID, ClassID) VALUES (? ,(SELECT ClassID FROM Classes WHERE SchoolID = ? AND FacultyCode = ? AND CourseCode = ?))`,
+      [token.UserID, body.SchoolID, body.FacultyCode, 1],
       (insertErr, insertResult) => {
         if (insertErr) {
           console.error('Error adding class:', insertErr);

@@ -1,9 +1,9 @@
 import { createSignal, For, Show, Setter } from 'solid-js'
 import { Modal, setActiveModal, NO_MODAL } from "./Modal";
-import { SlotData, SlotElement } from './Slot';
+//import { SlotData, SlotElement } from './Slot';
 import { setUserID, setPassword, isAdmin, schoolID } from "../api/Authentication";
 import { CONSTANTS } from "../api/Constants";
-import { followSchool, addTodo, fetchTodos, toggleTodo, deleteTodo } from '../api/User';
+import { followSchool, addTodo, fetchTodos, toggleTodo, deleteTodo, addClass } from '../api/User';
 import { fetchSchools } from '../api/Data';
 
 import "./Schedule.css";
@@ -18,6 +18,7 @@ enum ScheduleModal {
   TODO = "todo",
 }
 const INSTITUTION_FORM = "institution-form";
+const CLASS_FORM = "class-form";
 const TODO_FORM = "todo-form";
 
 interface ScheduleProps {
@@ -32,7 +33,7 @@ export default function Schedule( props: ScheduleProps ) {
     {ClassID: 3, SchoolID: 1, FacultyCode: 'CS', CourseCode: 433, ClassName: 'intro to ai', ClassDescription: 'search with jorg', ClassDays: 'TTh', ClassTime: '12:00', ClassLocation: 'st400'},
     {ClassID: 4, SchoolID: 1, FacultyCode: 'SE', CourseCode: 300, ClassName: 'intro to seng', ClassDescription: 'too much java', ClassDays: 'MW', ClassTime: '13:00', ClassLocation: 'st431'},
   ]);
-  const [school, setSchool] = createSignal<any>([{SchoolName: "None"}]);
+  const [school, setSchool] = createSignal<any>([{schoolID: 0, SchoolName: "None", SchoolAbbreviation: "N/A"}]);
   setClasses([]);
 
   fetchTodos(setTodos);
@@ -118,6 +119,19 @@ export default function Schedule( props: ScheduleProps ) {
             )}
           </For>
         </div>
+        <Modal title="Add Class" modalType={ScheduleModal.ADD_CLASS}>
+          <form id={CLASS_FORM}>
+            <label for="facultyCode">Faculty Code</label>
+            <input type="text" name="facultyCode"/>
+            <label for="courseCode">Course Code</label>
+            <input type="number" name="courseCode"/>
+            <input type="button" onclick={ async () => {
+              const form = document.getElementById(CLASS_FORM) as HTMLFormElement;
+              await addClass(school()[0].SchoolID, form.facultyCode.value, form.courseCode.value);
+              setActiveModal(NO_MODAL);
+            }} value="Add"/>
+          </form>
+        </Modal>
         <Modal title="Add Task" modalType={ScheduleModal.ADD_TODO}>
           <form id={TODO_FORM}>
             <label for="todo">Title</label>
@@ -132,7 +146,7 @@ export default function Schedule( props: ScheduleProps ) {
               await addTodo( form.todo.value, new Date(form.dueDate.value), form.description.value);
               await fetchTodos(setTodos);
               setActiveModal(NO_MODAL);
-            }} value="Submit"/>
+            }} value="Add"/>
           </form>
         </Modal>
         <Modal title="Change Institution" modalType={ScheduleModal.CHANGE_INSTITUTION}>

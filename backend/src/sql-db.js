@@ -16,7 +16,7 @@ const db = mysql.createConnection({
 });
 
 function configure(db) {
-  const table_creation_queries = [
+  const tableCreationQueries = [
     'CREATE DATABASE IF NOT EXISTS Scheduler',
     'USE Scheduler',
 
@@ -73,8 +73,8 @@ function configure(db) {
       TodoCompleted TINYINT(1) NOT NULL DEFAULT 0,
       PRIMARY KEY (TodoID))`,
   ]
-  for (let i = 0; i < table_creation_queries.length; i++) {
-    db.query(table_creation_queries[i], (err, result) => {
+  for (let i = 0; i < tableCreationQueries.length; i++) {
+    db.query(tableCreationQueries[i], (err, result) => {
       if (err) {
         console.error('Error executing ' + i + ' :', err);
       } else {

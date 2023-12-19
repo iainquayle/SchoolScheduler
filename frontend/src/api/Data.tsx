@@ -13,6 +13,6 @@ export async function fetchSchools(setSchoolList: any, schoolID: number = CONSTA
   const response = await postWithToken(CONSTANTS.routes.data + CONSTANTS.routes.schools, { SchoolID: schoolID});
   const result = await response.json();
   const data = await result.schools;
-  console.log(data);
+  //console.log(data);
   setSchoolList(data);
 }

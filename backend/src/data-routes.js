@@ -2,22 +2,19 @@ const express = require('express');
 const router = express.Router();
 const db = require('./sql-db');
 
-const {validateInput, validateUser } = require('./validation');
+const {validateInput, validateInputSpaced, validateUser } = require('./validation');
 
 
 
+//techincally should be searchable
 router.post('/classes', (req, res) => {
   const { token, body } = req.body;
-  if (!validateUser(token) || !validateInput([body.SchoolID, body.FacultyCode, body.CourseCode, body.CourseName, body.ClassTime, body.ClassLocation,
-    body.ClassDays])) {
+  if (!validateUser(token)) {
     return res.status(400).json({ error: 'Invalid input data' });
   } else {
     db.query(
-      `SELECT * FROM Classes WHERE SchoolID = ? 
-        AND FacultyCode LIKE ? 
-        AND CourseCode LIKE ? 
-        AND CourseName LIKE ?`,
-      [body.SchoolID, body.FacultyCode + '%', body.CourseCode + '%', body.CourseName + '%'],
+      `SELECT * FROM Classes`,
+      //[body.SchoolID, body.FacultyCode + '%', body.CourseCode + '%', body.CourseName + '%'],
       (err, result) => {
         if (err) {
           console.error('Error searching classes:', err);
