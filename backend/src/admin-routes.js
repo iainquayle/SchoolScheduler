@@ -6,16 +6,16 @@ const {validateInput, validateInputSpaced, validateAdmin, ADMIN} = require('./va
 
 router.post('/add_class', (req, res) => {
   const { token, body } = req.body;
-  if (!validateAdmin(token) || !validateInputSpaced([body.SchoolName, body.FacultyCode, body.CourseCode, body.ClassTime, body.ClassDays, body.ClassLocation, body.ClassDescription])) {
+  if (!validateAdmin(token) || !validateInputSpaced([body.SchoolName, body.FacultyCode, body.CourseCode, body.ClassName, body.ClassTime, body.ClassDays, body.ClassLocation, body.ClassDescription])) {
     console.log('Invalid input data');
     return res.status(400).json({ error: 'Invalid input data' });
   } else {
     db.query(
-      `INSERT INTO Classes (SchoolID, FacultyCode, CourseCode, ClassTime, ClassDays, ClassLocation, ClassDescription) 
+      `INSERT INTO Classes (SchoolID, FacultyCode, CourseCode, ClassName, ClassTime, ClassDays, ClassLocation, ClassDescription) 
         VALUES (
         (SELECT SchoolID FROM Schools WHERE SchoolName = ?),
-        UPPER(?), ?, ?, ?, ?, ?)`,
-      [body.SchoolName, body.FacultyCode, body.CourseCode, body.ClassTime, body.ClassDays, body.ClassLocation, body.ClassDescription],
+        UPPER(?), ?, ?, ?, ?, ?, ?)`,
+      [body.SchoolName, body.FacultyCode, body.CourseCode, body.ClassName, body.ClassTime, body.ClassDays, body.ClassLocation, body.ClassDescription],
       (insertErr, insertResult) => {
         if (insertErr) {
           console.error('Error adding class:', insertErr);

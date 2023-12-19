@@ -19,5 +19,6 @@ export const CONSTANTS = {
     deleteTodo: "/delete_todo",
     addClass: "/add_class",
     classes: "/classes",
+    deleteClass: "/delete_class",
   }
 }

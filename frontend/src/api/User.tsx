@@ -24,6 +24,16 @@ export async function addClass(schoolID: number, facultyCode: string, courseCode
   } catch (error) { console.log(error); }
 }
 
+export async function deleteClass(classID: number) {
+  try {
+    const response = await (postWithToken(CONSTANTS.routes.user + CONSTANTS.routes.deleteClass,
+      { ClassID: classID} ));
+    if (response.ok) {
+      //const json = await response.json();
+    }
+  } catch (error) { console.log(error); }
+}
+
 export async function fetchTodos(setTodos: Setter<any[]>) {
   try {
     const response = await (postWithToken(CONSTANTS.routes.user + CONSTANTS.routes.todos, {}));

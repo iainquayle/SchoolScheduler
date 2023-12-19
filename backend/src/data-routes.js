@@ -21,7 +21,6 @@ router.post('/classes', (req, res) => {
           return res.status(500).json({ error: 'Internal Server Error' });
         }
         console.log('Classes retrieved: ' + result.length);
-
         res.json({classes: result});
       });
   }

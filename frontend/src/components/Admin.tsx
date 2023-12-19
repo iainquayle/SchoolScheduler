@@ -2,7 +2,7 @@ import { createSignal, Setter, For } from 'solid-js'
 import { Modal, setActiveModal, NO_MODAL } from "./Modal";
 //import { userID, password } from '../api/Authentication';
 import { addSchool, promoteUser, addClass } from '../api/Admin';
-import { fetchSchools } from '../api/Data';
+import { fetchSchools, fetchClasses } from '../api/Data';
 
 import "./Shared.css";
 
@@ -23,9 +23,10 @@ interface AdminProps {
 
 export default function Admin( props: AdminProps ) {
   const [schools, setSchools] = createSignal([]);
-  const [classes, setClasses] = createSignal();
+  const [classes, setClasses] = createSignal([]);
 
   fetchSchools(setSchools);
+  fetchClasses(setClasses);
 
   return (
     <>
@@ -34,7 +35,7 @@ export default function Admin( props: AdminProps ) {
           <div class="column-element sidebar-element" onclick={() => {setActiveModal(AdminModals.ADD_SCHOOL);}}>Add School</div>
           <div class="column-element sidebar-element" onclick={() => {setActiveModal(AdminModals.ADD_CLASS)}}>Add Class</div>
           <div class="column-element sidebar-element" onclick={() => {setActiveModal(AdminModals.PROMOTE_USER)}}>Promote User</div>
-          <div class="column-element sidebar-element" onclick={() => {fetchSchools(setSchools)}}>Refresh</div>
+          <div class="column-element sidebar-element" onclick={() => {fetchSchools(setSchools); fetchClasses(setClasses)}}>Refresh</div>
           <div class="column-element sidebar-element" onclick={() => {props.setAccessAdmin(false)}}>Back</div>
         </div>
         <div class="column list">
@@ -45,6 +46,15 @@ export default function Admin( props: AdminProps ) {
           </For>
         </div>
         <div class="column list">
+          <For each={classes()}>
+            {(class_) => (
+              <div class="column-element list-element" style="display: grid; grid-template-columns: 1fr 1fr 4fr;">
+                <div>{class_.FacultyCode}</div>
+                <div>{class_.CourseCode}</div>
+                <div>{class_.ClassName}</div>
+              </div>
+            )}
+          </For>
         </div>
       </div>
       <Modal title={"Add Class"} modalType={AdminModals.ADD_CLASS}>
@@ -54,7 +64,7 @@ export default function Admin( props: AdminProps ) {
           <label for="facultycode">Faculty Code</label>
           <input type="text" name="facultycode" />
           <label for="coursecode">Course Code</label>
-          <input type="text" name="coursecode" />
+          <input type="number" name="coursecode" />
           <label for="classname">Class Name</label>
           <input type="text" name="classname" />
           <label for="monday">Monday</label>
@@ -82,8 +92,9 @@ export default function Admin( props: AdminProps ) {
               (form.wednesday.checked ? "W " : "") +
               (form.thursday.checked ? "Th " : "") +
               (form.friday.checked ? "F" : "");
-            await addClass(form.schoolname.value, form.facultycode.value, form.coursecode.value, days, form.description.value, days, form.classtime.value, form.classlocation.value);
+            await addClass(form.schoolname.value, form.facultycode.value, form.coursecode.value, form.classname.value, form.description.value, days, form.classtime.value, form.classlocation.value);
             setActiveModal(NO_MODAL);
+            fetchClasses(setClasses);
           }}/>
         </form>
       </Modal>

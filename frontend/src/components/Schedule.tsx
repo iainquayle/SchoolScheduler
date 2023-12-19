@@ -3,7 +3,7 @@ import { Modal, setActiveModal, NO_MODAL } from "./Modal";
 //import { SlotData, SlotElement } from './Slot';
 import { setUserID, setPassword, isAdmin, schoolID } from "../api/Authentication";
 import { CONSTANTS } from "../api/Constants";
-import { followSchool, addTodo, fetchTodos, toggleTodo, deleteTodo, addClass } from '../api/User';
+import { followSchool, addTodo, fetchTodos, toggleTodo, deleteTodo, addClass, fetchClasses, deleteClass } from '../api/User';
 import { fetchSchools } from '../api/Data';
 
 import "./Schedule.css";
@@ -27,14 +27,8 @@ interface ScheduleProps {
 
 export default function Schedule( props: ScheduleProps ) {
   const [todos, setTodos] = createSignal<any[]>([]);
-  const [classes, setClasses] = createSignal<any[]>([
-    {ClassID: 1, SchoolID: 1, FacultyCode: 'CS', CourseCode: 471, ClassName: 'database management', ClassDescription: 'squeal', ClassDays: 'MWF', ClassTime: '10:00', ClassLocation: 'st431'},
-    {ClassID: 2, SchoolID: 1, FacultyCode: 'CS', CourseCode: 457, ClassName: 'OS fundamentals', ClassDescription: 'not bad actually', ClassDays: 'MWF', ClassTime: '11:00', ClassLocation: 'st430'},
-    {ClassID: 3, SchoolID: 1, FacultyCode: 'CS', CourseCode: 433, ClassName: 'intro to ai', ClassDescription: 'search with jorg', ClassDays: 'TTh', ClassTime: '12:00', ClassLocation: 'st400'},
-    {ClassID: 4, SchoolID: 1, FacultyCode: 'SE', CourseCode: 300, ClassName: 'intro to seng', ClassDescription: 'too much java', ClassDays: 'MW', ClassTime: '13:00', ClassLocation: 'st431'},
-  ]);
+  const [classes, setClasses] = createSignal<any[]>([]);
   const [school, setSchool] = createSignal<any>([{schoolID: 0, SchoolName: "None", SchoolAbbreviation: "N/A"}]);
-  setClasses([]);
 
   fetchTodos(setTodos);
   fetchSchools(setSchool);
@@ -51,7 +45,7 @@ export default function Schedule( props: ScheduleProps ) {
           <div class="column-element sidebar-element" onclick={() => {setActiveModal(ScheduleModal.CHANGE_INSTITUTION)}}>
             School: { school()[0].SchoolName }
           </div>
-          <div class="column-element sidebar-element" onclick={() => {fetchTodos(setTodos); fetchSchools(setSchool, schoolID())}}>Refresh</div>
+          <div class="column-element sidebar-element" onclick={() => {fetchTodos(setTodos); fetchSchools(setSchool, schoolID()); fetchClasses(setClasses)}}>Refresh</div>
           <div class="column-element sidebar-element" onclick={() => {setActiveModal(NO_MODAL); setPassword(""); setUserID(CONSTANTS.null_id)}} >Logout</div>
         </div>
         <div class="column list">
@@ -90,7 +84,6 @@ export default function Schedule( props: ScheduleProps ) {
               }}>
                 <div style="pointer-event: none;">{userClass.FacultyCode}</div>
                 <div style="pointer-event: none;">{userClass.CourseCode}</div>
-                <div style="pointer-event: none;">{userClass.ClassName}</div>
                 <div style="pointer-event: none;">{userClass.ClassDays}</div>
                 <div style="pointer-event: none;">{userClass.ClassTime}</div>
                 <Modal title={userClass.ClassName} modalType={ScheduleModal.EDIT_CLASSES + userClass.ClassID}>
@@ -109,11 +102,11 @@ export default function Schedule( props: ScheduleProps ) {
                     }}
                    value="Add Task"/>
                   </form>
-                  <div onclick={
-                    async () => {
-                      setActiveModal(NO_MODAL);
-                    }
-                  }> Delete </div>
+                  <div onclick={ async () => {
+                    await deleteClass(userClass.ClassID);
+                    fetchClasses(setClasses);
+                    setActiveModal(NO_MODAL);
+                  }}> Delete </div>
                 </Modal>
               </div>
             )}
@@ -129,6 +122,7 @@ export default function Schedule( props: ScheduleProps ) {
               const form = document.getElementById(CLASS_FORM) as HTMLFormElement;
               await addClass(school()[0].SchoolID, form.facultyCode.value, form.courseCode.value);
               setActiveModal(NO_MODAL);
+              fetchClasses(setClasses);
             }} value="Add"/>
           </form>
         </Modal>

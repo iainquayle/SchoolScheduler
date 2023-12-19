@@ -12,8 +12,8 @@ router.post('/add_class', (req, res) => {
     return res.status(400).json({ error: 'Invalid input data' });
   } else {
     db.query(
-      `INSERT INTO UserClasses (UserID, ClassID) VALUES (? ,(SELECT ClassID FROM Classes WHERE SchoolID = ? AND FacultyCode = ? AND CourseCode = ?))`,
-      [token.UserID, body.SchoolID, body.FacultyCode, 1],
+      `INSERT INTO UserClasses (UserID, ClassID) VALUES (? ,(SELECT ClassID FROM Classes WHERE SchoolID = ? AND FacultyCode = UPPER(?) AND CourseCode = ?))`,
+      [token.UserID, body.SchoolID, body.FacultyCode, body.CourseCode],
       (insertErr, insertResult) => {
         if (insertErr) {
           console.error('Error adding class:', insertErr);
@@ -21,6 +21,44 @@ router.post('/add_class', (req, res) => {
         }
         console.log('Class added');
         res.json({ classid: insertResult.insertId });
+    });
+  }
+});
+
+router.post('/classes', (req, res) => {
+  const { token, body } = req.body;
+  if (!validateUser(token)) {
+    return res.status(400).json({ error: 'Invalid input data' });
+  } else {
+    db.query(
+    `SELECT * FROM Classes WHERE ClassID IN (SELECT ClassID FROM UserClasses WHERE UserID = ?)`,
+    [token.UserID],
+    (err, result) => {
+      if (err) {
+        console.error('Error retrieving classes:', err);
+        return res.status(500).json({ error: 'Internal Server Error' });
+      }
+      console.log('Classes retrieved: ' + result.length);
+      res.json({classes: result});
+    });
+  }
+});
+
+router.post('/delete_class', (req, res) => {
+  const { token, body } = req.body;
+  if (!validateUser(token) || !validateInput(body.ClassID)) {
+    return res.status(400).json({ error: 'Invalid input data' });
+  } else {
+    db.query(
+      `DELETE FROM UserClasses WHERE ClassID = ? AND UserID = ?`,
+      [body.ClassID, token.UserID],
+      (insertErr, insertResult) => {
+        if (insertErr) {
+          console.error('Error deleting class:', insertErr);
+          return res.status(500).json({ error: 'Internal Server Error' });
+        }
+        console.log('Class deleted');
+        res.json({ message: 'Class deleted' });
     });
   }
 });

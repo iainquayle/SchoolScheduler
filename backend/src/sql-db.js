@@ -40,6 +40,7 @@ function configure(db) {
       SchoolID INT NOT NULL,      
       FacultyCode VARCHAR(45) NOT NULL,
       CourseCode INT NOT NULL,
+      ClassName VARCHAR(45) NOT NULL,
       ClassTime VARCHAR(45) NOT NULL,
       ClassDays VARCHAR(45) NOT NULL,
       ClassLocation VARCHAR(255) NOT NULL,
