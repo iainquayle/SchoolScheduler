@@ -31,7 +31,7 @@ export default function Schedule( props: ScheduleProps ) {
   const [school, setSchool] = createSignal<any>([{schoolID: 0, SchoolName: "None", SchoolAbbreviation: "N/A"}]);
 
   fetchTodos(setTodos);
-  fetchSchools(setSchool);
+  fetchSchools(setSchool, schoolID());
 
   return (
     <>

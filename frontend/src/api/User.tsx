@@ -96,10 +96,12 @@ export async function followSchool(schoolName: string) {
   try {
     const response = await (postWithToken(CONSTANTS.routes.user + CONSTANTS.routes.followSchool, 
       { SchoolName: schoolName } ));
+    console.log("here");
     if (response.ok) {
       const json = await response.json();
       if(json.SchoolID != null && json.SchoolID != CONSTANTS.null_id) {
         setSchoolID(json.SchoolID);
+        console.log(json.SchoolID);
         return;
       }
     } 
